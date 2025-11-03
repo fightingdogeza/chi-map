@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>管理者作成</title>
+  <!-- JS のパスを ../js/admin.js に修正 -->
+  <script type="module" src="../project/js/admin.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2em; max-width: 400px; margin: auto; }
+    form { display: flex; flex-direction: column; gap: 1em; }
+    input, button { padding: 0.5em; font-size: 1em; }
+  </style>
+</head>
+<body>
+  <h1>管理者作成（社内用）</h1>
+
+  <form id="admin-form">
+    <input type="email" id="admin-email" placeholder="メールアドレス" required />
+    <input type="password" id="admin-password" placeholder="パスワード" required />
+    <input type="password" id="admin-key" placeholder="管理者キー" required />
+    <button type="submit">作成</button>
+  </form>
+</body>
+</html>

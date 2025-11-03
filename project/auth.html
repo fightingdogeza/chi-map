@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>ログイン / 新規登録</title>
+  <script type="module" src="./js/auth.js" defer></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2em;
+      max-width: 400px;
+      margin: auto;
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      margin-top: 1.5em;
+    }
+    input, button {
+      padding: 0.6em;
+      font-size: 1em;
+    }
+    #show-signup-btn{
+      margin-top: 1.5em;
+    }
+    #signup-form {
+      display: none; /* 初期状態では非表示 */
+    }
+  </style>
+</head>
+<body>
+  <h1>ちーまっぷ ログイン</h1>
+
+  <!-- ログインフォーム -->
+  <form id="login-form">
+    <h3>ログイン</h3>
+    <input type="email" id="login-email" placeholder="メールアドレス" required />
+    <input type="password" id="login-password" placeholder="パスワード" required />
+    <button type="submit">ログイン</button>
+  </form>
+
+  <!-- 新規登録へボタン -->
+  <button id="show-signup-btn">新規登録はこちら</button>
+
+  <button id="map">マップへ</button>
+  <!-- 新規登録フォーム -->
+  <form id="signup-form">
+    <h3>新規登録（一般ユーザー）</h3>
+    <input type="email" id="signup-email" placeholder="メールアドレス" required />
+    <input type="password" id="signup-password" placeholder="パスワード" required />
+    <button type="submit">登録</button>
+    <button type="button" id="back-to-login-btn">← ログインに戻る</button>
+  </form>
+</body>
+</html>
