@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabaseUrl = "https://xztzhsvcytquzhzduura.supabase.co";
-const supabaseKey = "YOUR_ANON_KEY"; // フロントで利用する anonキー
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6dHpoc3ZjeXRxdXpoemR1dXJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MTczMzEsImV4cCI6MjA3NjM5MzMzMX0.TnqtjeGLezpoPKNuc1q5ooIMiwneZjrEf4j0j5z3a4c"; // anonキー
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 現在ログイン中のユーザー取得
@@ -89,7 +89,7 @@ async function deletePinWorker(pin, card) {
   }
   const userRole = user.user_metadata?.role || "user";
 
-  const response = await fetch("https://delete-pin-worker.yourname.workers.dev", {
+  const response = await fetch("https://delete-pin-worker.chi-map.workers.dev", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
