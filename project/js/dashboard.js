@@ -1,19 +1,48 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const supabaseUrl = "https://xztzhsvcytquzhzduura.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6dHpoc3ZjeXRxdXpoemR1dXJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MTczMzEsImV4cCI6MjA3NjM5MzMzMX0.TnqtjeGLezpoPKNuc1q5ooIMiwneZjrEf4j0j5z3a4c"; // anonキー
-const supabase = createClient(supabaseUrl, supabaseKey);
+// ================== Supabase 初期化 ==================
+let supabase = null;
 
+async function initSupabase() {
+  // Supabaseライブラリをグローバルから参照
+  // CDN経由で読み込まれている前提（例: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>）
+  if (typeof window.supabase === 'undefined') {
+    console.error("Supabaseライブラリが読み込まれていません。");
+    alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
+    return;
+  }
 
-// 現在のログインユーザー取得
-async function getCurrentUser() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session || !session.user) return null;
-  return session.user;
+  // Workerから環境変数を取得
+  const res = await fetch('https://delete-pin-worker.chi-map.workers.dev/init-supabase');
+  const { supabaseUrl, supabaseAnonKey } = await res.json();
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("SupabaseのURLまたはキーが取得できません。");
+  }
+
+  // Supabaseクライアント初期化
+  supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+  console.log("Supabase initialized:", supabaseUrl);
+  return supabase;
 }
 
-// 初期化
+// ------------------ 現在のログインユーザー取得 ------------------
+async function getCurrentUser() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+  if (error) {
+    console.error("Session error:", error.message);
+    return null;
+  }
+  return session?.user || null;
+}
+
+// ------------------ 初期化 ------------------
 async function init() {
+  await initSupabase(); // ← まずここでSupabaseを初期化
+  if (!supabase) {
+    console.error("Supabase初期化に失敗しました。");
+    return;
+  }
+
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
@@ -28,8 +57,8 @@ async function init() {
     content.innerHTML = `<h2>管理者ページ</h2><p>すべての投稿を管理できます。</p>`;
     await loadAllPinsForAdmin();
   } else {
-    content.innerHTML = `<h2>一般ユーザー</h2><p>自分の投稿だけ管理できます。</p>`;    
-    await loadDashboardPins();
+    content.innerHTML = `<h2>一般ユーザー</h2><p>自分の投稿だけ管理できます。</p>`;
+    await loadDashboardPins(user.id);
   }
 }
 
@@ -42,11 +71,11 @@ async function deletePin(pin) {
     return;
   }
 
-  const response = await fetch('https://delete-pin-worker.yourname.workers.dev/delete-pin', {
+  const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/delete-pin', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      pinId: pin.id,
+      id: pin.id,
       userId: user.id,
       role: user.user_metadata?.role || 'user',
       imagePath: pin.image_path
@@ -62,35 +91,26 @@ async function deletePin(pin) {
     alert(result.error || '削除できませんでした');
   }
 }
-
-// ------------------ 自分の投稿を取得 ------------------
-async function loadDashboardPins() {
-  const user = await getCurrentUser();
-  if (!user) return;
-
-  const { data: pins, error } = await supabase
-    .from('hazard_pin')
-    .select('*, categories(name)')
-    .eq('uid', user.id);
-
-  if (error) {
-    console.error("投稿取得エラー:", error);
-    return;
-  }
-
-  renderPins(pins);
-}
-
 // ------------------ 管理者用 全投稿取得 ------------------
 async function loadAllPinsForAdmin() {
-  const response = await fetch('https://delete-pin-worker.yourname.workers.dev/get-all-pins', {
-    method: 'GET',
+  const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/get-all-pins', {
     headers: { 'x-user-role': 'admin' }
+  });
+  const pins = await response.json();
+  renderPins(pins);
+}
+// ------------------ 自分の投稿を取得 ------------------
+async function loadDashboardPins(userId) {
+  const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/get-user-pins', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId })
   });
 
   const pins = await response.json();
   renderPins(pins);
 }
+
 
 // ------------------ 投稿カード描画 ------------------
 function renderPins(pins) {
@@ -109,7 +129,7 @@ function renderPins(pins) {
       <p>${pin.description}</p>
       <p><strong>カテゴリー:</strong> ${categoryName}</p>
       <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
-      ${pin.image_path ? `<img src="${pin.image_path}" />` : ''}
+      ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;" />` : ''}
       <button>削除</button>
     `;
 
@@ -125,6 +145,7 @@ document.getElementById("map").addEventListener('click', () => {
 
 document.getElementById("logout").addEventListener("click", async () => {
   await supabase.auth.signOut();
+  localStorage.removeItem('supabase_session');
   window.location.href = "auth.html";
 });
 

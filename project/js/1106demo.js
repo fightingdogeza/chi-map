@@ -93,22 +93,30 @@ function loadModal() {
 }
 
 function openModal() { modalOpen = true; document.getElementById("pinModal").style.display = 'block'; }
-function closeModal() { 
-  modalOpen = false; 
+function closeModal() {
+  modalOpen = false;
   const modal = document.getElementById("pinModal");
-  modal.style.display = "none"; 
+  modal.style.display = "none";
   if (tempMarker) { tempMarker.setMap(null); tempMarker = null; }
 }
 
 // --- 画像アップロード ---
 async function uploadHazardImage(file) {
   if (!file) return null;
-  const fileName = `user_uploads/${Date.now()}_${file.name}`;
+  const fileName = sanitizeFileName(file.name);
   const { data, error } = await supabase.storage.from('pin-images').upload(fileName, file);
   if (error) return null;
   const { data: publicUrlData, error: urlError } = supabase.storage.from('pin-images').getPublicUrl(fileName);
   if (urlError) return null;
   return publicUrlData.publicUrl;
+}
+//日本語を英語に
+function sanitizeFileName(fileName) {
+  const timestamp = Date.now();
+  const ext = fileName.split('.').pop();
+  const base = fileName.split('.').slice(0, -1).join('.');
+  const safeBase = base.replace(/[^a-zA-Z0-9_-]/g, '_');
+  return `user_uploads/${timestamp}_${safeBase}.${ext}`;
 }
 
 // --- 投稿フォーム ---
@@ -147,29 +155,30 @@ function setupPost() {
       uid: user.id
     }]).select();
 
-    if (error) { 
+    if (error) {
       console.error("投稿エラー:", error);
       alert("投稿に失敗しました。");
       return;
     }
-
     alert("投稿が完了しました！");
     closeModal();
     await loadPins();
   });
 }
-
 // --- ピン読み込み + 削除対応（Public） ---
 async function loadPins() {
-  const { data: pins, error } = await supabase
-    .from('hazard_pin')
-    .select('*, categories(name)');
+  const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/get-all-pins', {
+    headers: { "Content-Type": "application/json" }
+  });
 
-  if (error) { 
-    console.error("ピン取得エラー:", error); 
-    return; 
+  const text = await response.text();
+  let pins;
+  try {
+    pins = JSON.parse(text);
+  } catch {
+    console.error("JSON変換エラー:", text);
+    return;
   }
-
   markers.forEach(m => m.setMap(null));
   markers = [];
   if (!infoWindow) infoWindow = new google.maps.InfoWindow();
@@ -264,12 +273,25 @@ async function updateNavMenu() {
   }
 }
 
-supabase.auth.onAuthStateChange((_event, session) => {
-  if (session) {
-    navLoginBtn.textContent = "ダッシュボード";
-    navLoginBtn.onclick = () => window.location.href = "dashboard.html";
-  } else {
-    navLoginBtn.textContent = "ログイン";
-    navLoginBtn.onclick = () => window.location.href = "auth.html";
+
+// --- ページロード時の初期化 ---
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    await initSupabase(); // ← Supabase 初期化を待つ
+
+    // 初期化後にイベントリスナー登録
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        navLoginBtn.textContent = "ダッシュボード";
+        navLoginBtn.onclick = () => window.location.href = "dashboard.html";
+      } else {
+        navLoginBtn.textContent = "ログイン";
+        navLoginBtn.onclick = () => window.location.href = "auth.html";
+      }
+    });
+    initMap();
+    await updateNavMenu(); // ← 初期化後に呼び出す
+  } catch (err) {
+    console.error("初期化中にエラーが発生:", err);
   }
 });
