@@ -9,7 +9,6 @@ let supabase = null;
 
 async function initSupabase() {
   // Supabaseライブラリをグローバルから参照
-  // CDN経由で読み込まれている前提（例: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>）
   if (typeof window.supabase === 'undefined') {
     console.error("Supabaseライブラリが読み込まれていません。");
     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
@@ -227,30 +226,38 @@ async function loadPins() {
           const btn = document.getElementById("deleteBtn");
           if (!btn) return;
           btn.addEventListener("click", async () => {
-            // --- Storage の画像削除 ---
-            if (pin.image_path) {
-              const filePath = pin.image_path.split('/').slice(-2).join('/');
-              const { error: storageError } = await supabase.storage.from('pin-images').remove([filePath]);
-              if (storageError) console.error("画像削除失敗:", storageError);
-            }
-
-            // --- テーブル削除 ---
-            const currentUser = await getCurrentUser();
-            console.log(currentUser.id);
-            if (!currentUser || currentUser.id !== pin.uid) {
+            if (!user || user.id !== pin.uid) {
               alert("削除権限がありません");
               return;
             }
+            const access_token = localStorage.getItem("access_token");
+            const refresh_token = localStorage.getItem("refresh_token");
 
-            const { error } = await supabase.from('hazard_pin').delete().eq('id', pin.id);
-            if (error) {
-              alert("削除できませんでした");
-              console.error(error);
-            } else {
-              alert("削除しました");
-              marker.setMap(null);
-              infoWindow.close();
+            if (!access_token || !refresh_token) {
+              alert("ログイン情報が無効です。再ログインしてください。");
+              return;
             }
+            // --- Storage の画像削除 ---
+            const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/delete-pin', {
+              method: "POST",
+              headers: { "Content-Type": "application/json, charset=UTF-8" },
+              body: JSON.stringify({
+                id: pin.id,
+                imagePath: pin.image_path,
+                access_token,
+                refresh_token
+              }),
+            });
+            const result = await response.json();
+            if (!response.ok) {
+              alert("削除に失敗しました: " + (result.error || "不明なエラー"));
+              console.error(result.error);
+              return;
+            }
+
+            alert("削除しました");
+            marker.setMap(null);
+            infoWindow.close();
           });
         }, 100);
       }
@@ -292,16 +299,11 @@ async function updateNavMenu() {
 window.addEventListener('DOMContentLoaded', async () => {
   try {
     await initSupabase(); // ← Supabase 初期化を待つ
+    await updateNavMenu(); // 状態変化のたびにUIを更新
 
     // 初期化後にイベントリスナー登録
-    supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        navLoginBtn.textContent = "ダッシュボード";
-        navLoginBtn.onclick = () => window.location.href = "dashboard.html";
-      } else {
-        navLoginBtn.textContent = "ログイン";
-        navLoginBtn.onclick = () => window.location.href = "auth.html";
-      }
+    supabase.auth.onAuthStateChange(async (_event, session) => {
+      await updateNavMenu(); // 状態変化のたびにUIを更新
     });
     initMap();
     await updateNavMenu(); // ← 初期化後に呼び出す
