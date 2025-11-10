@@ -57,16 +57,20 @@ signupForm.addEventListener("submit", async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "登録に失敗しました");
+    alert("確認メールを送信しました。");
+    signupForm.style.display = "none";
+    loginForm.style.display = "none";
+    document.getElementById("show-signup-btn").style.display = "none";
+    document.getElementById("map").style.display = "none";
+    document.getElementById("title").style.display = "none";
 
-    alert("登録に成功しました！");
-    localStorage.setItem("access_token", data.session.access_token);
-    localStorage.setItem("refresh_token", data.session.refresh_token);
-
-
-    window.location.href = "dashboard.html";
+    const messageEl = document.getElementById("signup-message");
+    if (messageEl) {
+      messageEl.textContent = "メールを確認してください。アカウントはまだ有効化されていません。";
+      messageEl.style.display = "block";
+    }
   } catch (err) {
     alert("エラー: " + err.message);
   } finally {
@@ -79,7 +83,6 @@ loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
-
   try {
     const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/login", {
       method: "POST",

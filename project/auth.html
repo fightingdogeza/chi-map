@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <title>ログイン / 新規登録</title>
@@ -12,26 +13,33 @@
       margin: auto;
       text-align: center;
     }
+
     form {
       display: flex;
       flex-direction: column;
       gap: 1em;
       margin-top: 1.5em;
     }
-    input, button {
+
+    input,
+    button {
       padding: 0.6em;
       font-size: 1em;
     }
-    #show-signup-btn{
+
+    #show-signup-btn {
       margin-top: 1.5em;
     }
+
     #signup-form {
-      display: none; /* 初期状態では非表示 */
+      display: none;
+      /* 初期状態では非表示 */
     }
   </style>
 </head>
+
 <body>
-  <h1>ちーまっぷ ログイン</h1>
+  <h1 id="title">ちーまっぷ ログイン</h1>
 
   <!-- ログインフォーム -->
   <form id="login-form">
@@ -53,5 +61,9 @@
     <button type="submit">登録</button>
     <button type="button" id="back-to-login-btn">← ログインに戻る</button>
   </form>
+
+  <div id="signup-message" style="display:none; color:green; margin-top:1em;"></div>
+
 </body>
+
 </html>

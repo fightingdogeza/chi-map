@@ -14,7 +14,6 @@ async function initSupabase() {
     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
     return;
   }
-
   // Workerから環境変数を取得
   const res = await fetch('https://delete-pin-worker.chi-map.workers.dev/init-supabase');
   const { supabaseUrl, supabaseAnonKey } = await res.json();
@@ -111,26 +110,6 @@ function closeModal() {
   modal.style.display = "none";
   if (tempMarker) { tempMarker.setMap(null); tempMarker = null; }
 }
-
-// --- 画像アップロード ---
-async function uploadHazardImage(file) {
-  if (!file) return null;
-  const fileName = sanitizeFileName(file.name);
-  const { data, error } = await supabase.storage.from('pin-images').upload(fileName, file);
-  if (error) return null;
-  const { data: publicUrlData, error: urlError } = supabase.storage.from('pin-images').getPublicUrl(fileName);
-  if (urlError) return null;
-  return publicUrlData.publicUrl;
-}
-//日本語を英語に
-function sanitizeFileName(fileName) {
-  const timestamp = Date.now();
-  const ext = fileName.split('.').pop();
-  const base = fileName.split('.').slice(0, -1).join('.');
-  const safeBase = base.replace(/[^a-zA-Z0-9_-]/g, '_');
-  return `user_uploads/${timestamp}_${safeBase}.${ext}`;
-}
-
 // --- 投稿フォーム ---
 function setupPost() {
   const form = document.getElementById("pinForm");
@@ -152,29 +131,35 @@ function setupPost() {
       window.location.href = "auth.html";
       return;
     }
-
-    let image_path = null;
-    if (fileInput.files.length > 0) image_path = await uploadHazardImage(fileInput.files[0]);
-
-    const { data, error } = await supabase.from('hazard_pin').insert([{
-      title,
-      description,
-      category_id,
-      created_at: new Date().toISOString(),
-      lat: selectedLatLng.lat(),
-      lng: selectedLatLng.lng(),
-      image_path,
-      uid: user.id
-    }]).select();
-
-    if (error) {
-      console.error("投稿エラー:", error);
-      alert("投稿に失敗しました。");
-      return;
+    let formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("category_id", category_id);
+    formData.append("lat", selectedLatLng.lat());
+    formData.append("lng", selectedLatLng.lng());
+    formData.append("uid", user.id);
+    if (fileInput.files.length > 0) {
+      formData.append("image", fileInput.files[0]);
     }
-    alert("投稿が完了しました！");
-    closeModal();
-    await loadPins();
+    try {
+      const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/post-pin", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        alert("投稿が完了しました！");
+        closeModal();
+        await loadPins();
+      } else {
+        console.error("投稿エラー:", result.error);
+        alert("投稿に失敗しました。");
+      }
+    } catch (err) {
+      console.error("投稿例外:", err);
+      alert("投稿に失敗しました。");
+    }
   });
 }
 // --- ピン読み込み + 削除対応（Public） ---
@@ -254,7 +239,7 @@ async function loadPins() {
               console.error(result.error);
               return;
             }
-
+            alert(result.warning);
             alert("削除しました");
             marker.setMap(null);
             infoWindow.close();
@@ -286,7 +271,7 @@ function startRealtimeListener() {
 async function updateNavMenu() {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
-    navLoginBtn.textContent = "ダッシュボード";
+    navLoginBtn.textContent = "一覧";
     navLoginBtn.onclick = () => window.location.href = "dashboard.html";
   } else {
     navLoginBtn.textContent = "ログイン";
