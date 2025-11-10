@@ -5,13 +5,13 @@
         <form id="pinForm">
             <input type="hidden" id="latitude" name="latitude">
             <input type="hidden" id="longitude" name="longitude">
-            <label>タイトル<strong>（必須）</strong></label>
+            <label>タイトル<strong>(必須)</strong></label>
             <input type="text" id="title" name="title" required>
 
             <label>説明（任意）</label>
             <textarea id="description" name="description"></textarea>
 
-            <label>カテゴリ</label>
+            <label>カテゴリ<strong>(必須)</strong></label>
             <select id="category" name="category" required>
                 <!--ここのvalueの値はカテゴリテーブルのidの値と一致させる-->
                 <option value="none" selected disabled></option>
@@ -21,6 +21,7 @@
                 <option value="4">危険物・障害物</option>
                 <option value="5">その他</option>
             </select>
+            <!--写真アップロードのリンク参照はimage/*でPCもスマホも行ける-->
             <input type="file" id="image" accept="image/*">
             <div class="buttons">
                 <button type="submit" id="submitBtn">送信</button>

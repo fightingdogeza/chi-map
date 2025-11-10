@@ -37,9 +37,22 @@ const navLoginBtn = document.getElementById('nav-login');
 
 // --- 現在のログインユーザー取得 ---
 async function getCurrentUser() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session || !session.user) return null;
-  return session.user;
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    console.log("トークンが存在しません。未ログイン状態です。");
+    return null;
+  }
+  const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    console.warn("認証エラー:", data.error);
+    return null;
+  }
+
+  return data.user;
 }
 
 // --- Google Map 初期化 ---
@@ -223,6 +236,7 @@ async function loadPins() {
 
             // --- テーブル削除 ---
             const currentUser = await getCurrentUser();
+            console.log(currentUser.id);
             if (!currentUser || currentUser.id !== pin.uid) {
               alert("削除権限がありません");
               return;

@@ -21,25 +21,35 @@ async function initSupabase() {
 
   // Supabaseクライアント初期化
   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-  console.log("Supabase initialized:", supabaseUrl);
+  // console.log("Supabase initialized:", supabaseUrl);
   return supabase;
 }
 
 // ------------------ 現在のログインユーザー取得 ------------------
 async function getCurrentUser() {
-  const { data: { session }, error } = await supabase.auth.getSession();
-  if (error) {
-    console.error("Session error:", error.message);
+    const token = localStorage.getItem("access_token");
+      if (!token) {
+    console.log("トークンが存在しません。未ログイン状態です。");
     return null;
   }
-  return session?.user || null;
+  const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    console.warn("認証エラー:", data.error);
+    return null;
+  }
+
+  return data.user;
 }
 
 // ------------------ 初期化 ------------------
 async function init() {
   await initSupabase(); // ← まずここでSupabaseを初期化
   if (!supabase) {
-    console.error("Supabase初期化に失敗しました。");
+    // console.error("Supabase初期化に失敗しました。");
     return;
   }
 
@@ -70,15 +80,16 @@ async function deletePin(pin) {
     window.location.href = "auth.html";
     return;
   }
-
+  const access_token = localStorage.getItem("access_token");
+  const refresh_token = localStorage.getItem("refresh_token");
   const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/delete-pin', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       id: pin.id,
-      userId: user.id,
-      role: user.user_metadata?.role || 'user',
-      imagePath: pin.image_path
+      imagePath: pin.image_path,
+      access_token,
+      refresh_token
     })
   });
 

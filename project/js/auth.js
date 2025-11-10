@@ -52,7 +52,7 @@ signupForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("signup-password").value;
 
   try {
-    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/signup", {
+    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -62,6 +62,10 @@ signupForm.addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error(data.error || "登録に失敗しました");
 
     alert("登録に成功しました！");
+    localStorage.setItem("access_token", data.session.access_token);
+    localStorage.setItem("refresh_token", data.session.refresh_token);
+
+
     window.location.href = "dashboard.html";
   } catch (err) {
     alert("エラー: " + err.message);
@@ -85,6 +89,8 @@ loginForm.addEventListener("submit", async (e) => {
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
+    localStorage.setItem("access_token", data.session.access_token);
+    localStorage.setItem("refresh_token", data.session.refresh_token);
 
     console.log("ログイン成功:", data.user);
     window.location.href = "dashboard.html"; // ログイン後に移動
@@ -94,6 +100,6 @@ loginForm.addEventListener("submit", async (e) => {
 });
 
 // --- 地図へ戻るボタン ---
-mapToBtn.addEventListener("click", function() {
+mapToBtn.addEventListener("click", function () {
   window.location.href = "index.html";
 });
