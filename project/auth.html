@@ -52,6 +52,17 @@
   <!-- 新規登録へボタン -->
   <button id="show-signup-btn">新規登録はこちら</button>
 
+  <p id="forgot-link">
+    <a href="#" id="show-forgot-form">パスワードを忘れた場合はこちら</a>
+  </p>
+
+  <form id="forgot-form" style="display:none;">
+    <h3>パスワードリセット</h3>
+    <input type="email" id="forgot-email" placeholder="登録メールアドレス" required />
+    <button type="submit">リセットメールを送信</button>
+    <p><a href="#" id="back-to-login">← ログイン画面に戻る</a></p>
+  </form>
+
   <button id="map">マップへ</button>
   <!-- 新規登録フォーム -->
   <form id="signup-form">
@@ -62,6 +73,7 @@
     <button type="button" id="back-to-login-btn">← ログインに戻る</button>
   </form>
 
+  <h3>パスワードを忘れた場合はこちら</h3>
   <div id="signup-message" style="display:none; color:green; margin-top:1em;"></div>
 
 </body>
