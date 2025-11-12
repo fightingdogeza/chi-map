@@ -48,8 +48,8 @@ signupForm.addEventListener("submit", async (e) => {
   const button = e.target.querySelector("button");
   button.disabled = true;
 
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
+  const email = await document.getElementById("signup-email").value;
+  const password = await document.getElementById("signup-password").value;
   console.log("email:", email, "password:", password); // ← 実際に入力された値が表示されるか
 
   try {
@@ -81,8 +81,8 @@ signupForm.addEventListener("submit", async (e) => {
 
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
+  const email = await document.getElementById("login-email").value;
+  const password = await document.getElementById("login-password").value;
   try {
     const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/login", {
       method: "POST",
