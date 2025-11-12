@@ -20,28 +20,53 @@ async function initSupabase() {
 
   // Supabaseクライアント初期化
   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-  // console.log("Supabase initialized:", supabaseUrl);
   return supabase;
 }
 
 // ------------------ 現在のログインユーザー取得 ------------------
+// --- 現在のログインユーザー取得 ---
 async function getCurrentUser() {
-    const token = localStorage.getItem("access_token");
-      if (!token) {
+  const access_token = localStorage.getItem("access_token");
+  const refresh_token = localStorage.getItem("refresh_token");
+
+  if (!access_token) {
     console.log("トークンが存在しません。未ログイン状態です。");
     return null;
   }
-  const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
 
-  const data = await res.json();
-  if (!res.ok) {
-    console.warn("認証エラー:", data.error);
+  try {
+    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "X-Refresh-Token": refresh_token, // refresh_tokenを一緒に送信
+      },
+    });
+
+    const data = await res.json();
+
+    // --- 無効または期限切れ ---
+    if (!res.ok || !data.loggedIn) {
+      console.warn("認証エラー:", data.message || data.error);
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      return null;
+    }
+
+    // --- 新しいトークンが返ってきた場合、更新 ---
+    if (data.new_access_token) {
+      localStorage.setItem("access_token", data.new_access_token);
+      localStorage.setItem("refresh_token", data.new_refresh_token);
+      console.log("トークンを更新しました");
+    }
+
+    console.log("ログイン中:", data.user);
+    return data.user;
+
+  } catch (err) {
+    console.error("通信エラー:", err);
     return null;
   }
-
-  return data.user;
 }
 
 // ------------------ 初期化 ------------------

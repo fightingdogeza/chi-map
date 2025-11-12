@@ -272,41 +272,44 @@ async function loadPins() {
         }, 100);
       }
     });
-
     markers.push(marker);
   });
 }
 
-// --- リアルタイム監視 ---
 function startRealtimeListener() {
-  supabase.channel('hazard_pin_changes')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'hazard_pin' }, payload => {
-      const pin = payload.new;
-      new google.maps.Marker({
-        position: { lat: pin.lat, lng: pin.lng },
-        map: map,
-        icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-        title: pin.title
-      });
-    })
-    .subscribe();
+  const eventSource = new EventSource("https://delete-pin-worker.chi-map.workers.dev/realtime");
+
+  eventSource.onmessage = (event) => {
+    const pin = JSON.parse(event.data);
+    console.log("新しいピン:", pin);
+
+    // Google Maps に追加
+    new google.maps.Marker({
+      position: { lat: pin.lat, lng: pin.lng },
+      map: map,
+      icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+      title: pin.title,
+    });
+  };
+
+  eventSource.onerror = (err) => {
+    console.error("SSEエラー:", err);
+    eventSource.close();
+  };
 }
 
 async function updateNavMenu() {
   try {
-    getTokens();
-    if (!access_token || !refresh_token) {
+    const user = await getCurrentUser();
+    if (!user) {
       // 未ログイン時
       navLoginBtn.textContent = "ログイン";
       navLoginBtn.onclick = () => window.location.href = "auth.html";
-      console.error("naiyo");
       return;
     }
-
     // --- ログイン中UI反映 ---
     navLoginBtn.textContent = "一覧";
     navLoginBtn.onclick = () => window.location.href = "dashboard.html";
-
   } catch (error) {
     console.error("ログイン確認エラー:", error);
 
@@ -320,7 +323,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     await initSupabase();
     await updateNavMenu();
-
     supabase.auth.onAuthStateChange(async () => {
       await updateNavMenu();
     });
@@ -330,6 +332,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.error("初期化エラー:", err);
   }
 });
+
 function getTokens() {
   access_token = localStorage.getItem("access_token");
   refresh_token = localStorage.getItem("refresh_token");
