@@ -1,0 +1,29 @@
+    body {
+        font-family: sans-serif;
+        padding: 2em;
+        max-width: 400px;
+        margin: auto;
+        text-align: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        margin-top: 1.5em;
+    }
+
+    input,
+    button {
+        padding: 0.6em;
+        font-size: 1em;
+    }
+
+    #show-signup-btn {
+        margin-top: 1.5em;
+    }
+
+    #signup-form {
+        display: none;
+        /* 初期状態では非表示 */
+    }

@@ -8,6 +8,7 @@ let infoWindow = null;
 let supabase = null;
 let access_token = null;
 let refresh_token = null;
+let user = null;
 
 async function initSupabase() {
   // Supabaseライブラリをグローバルから参照
@@ -37,8 +38,7 @@ const navLoginBtn = document.getElementById('nav-login');
 
 // --- 現在のログインユーザー取得 ---
 async function getCurrentUser() {
-  const access_token = localStorage.getItem("access_token");
-  const refresh_token = localStorage.getItem("refresh_token");
+  getTokens();
 
   if (!access_token) {
     console.log("トークンが存在しません。未ログイン状態です。");
@@ -50,7 +50,7 @@ async function getCurrentUser() {
       method: "GET",
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "X-Refresh-Token": refresh_token, // refresh_tokenを一緒に送信
+        "X-Refresh-Token": refresh_token,
       },
     });
 
@@ -59,6 +59,7 @@ async function getCurrentUser() {
     // --- 無効または期限切れ ---
     if (!res.ok || !data.loggedIn) {
       console.warn("認証エラー:", data.message || data.error);
+      //トークンをここで格納しておく
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
       return null;
@@ -95,7 +96,7 @@ window.initMap = function () {
   map.addListener("click", async function (e) {
     if (modalOpen) return;
 
-    const user = await getCurrentUser();
+    user = await getCurrentUser();
     if (!user) {
       alert("ログインしてください");
       window.location.href = "auth.html";
@@ -130,7 +131,10 @@ function loadModal() {
     .catch(error => console.error("モーダル読み込み失敗:", error));
 }
 
-function openModal() { modalOpen = true; document.getElementById("pinModal").style.display = 'block'; }
+function openModal() {
+  modalOpen = true; document.getElementById("pinModal").style.display = 'block';
+}
+
 function closeModal() {
   modalOpen = false;
   const modal = document.getElementById("pinModal");
@@ -152,7 +156,7 @@ function setupPost() {
 
     if (category_id === "none") { alert("カテゴリを選択してください"); return; }
 
-    const user = await getCurrentUser();
+    user = await getCurrentUser();
     if (!user) {
       alert("ログインが切れています。再度ログインしてください。");
       window.location.href = "auth.html";
@@ -206,7 +210,7 @@ async function loadPins() {
   markers = [];
   if (!infoWindow) infoWindow = new google.maps.InfoWindow();
 
-  const user = await getCurrentUser();
+  user = await getCurrentUser();
 
   pins.forEach(pin => {
     const marker = new google.maps.Marker({
@@ -253,7 +257,7 @@ async function loadPins() {
                 id: pin.id,
                 imagePath: pin.image_path,
                 access_token,
-                refresh_token 
+                refresh_token
               }),
             });
 
@@ -300,7 +304,7 @@ function startRealtimeListener() {
 
 async function updateNavMenu() {
   try {
-    const user = await getCurrentUser();
+    user = await getCurrentUser();
     if (!user) {
       // 未ログイン時
       navLoginBtn.textContent = "ログイン";
@@ -323,10 +327,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     await initSupabase();
     await updateNavMenu();
-    supabase.auth.onAuthStateChange(async () => {
-      await updateNavMenu();
-    });
-
     initMap();
   } catch (err) {
     console.error("初期化エラー:", err);

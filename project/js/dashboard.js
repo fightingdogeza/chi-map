@@ -1,5 +1,4 @@
 
-// ================== Supabase 初期化 ==================
 let supabase = null;
 
 async function initSupabase() {
@@ -23,7 +22,6 @@ async function initSupabase() {
 }
 
 // ------------------ 現在のログインユーザー取得 ------------------
-// --- 現在のログインユーザー取得 ---
 async function getCurrentUser() {
   const access_token = localStorage.getItem("access_token");
   const refresh_token = localStorage.getItem("refresh_token");
@@ -173,16 +171,17 @@ function renderPins(pins) {
   });
 }
 
-// ------------------ イベント ------------------
+//マップへ戻るボタン
 document.getElementById("map").addEventListener('click', () => {
   window.location.href = "index.html";
 });
-
+//ログアウトボタン
 document.getElementById("logout").addEventListener("click", async () => {
   await setupLogout();
   localStorage.removeItem('supabase_session');
   window.location.href = "auth.html";
 });
+
 async function setupLogout() {
   await initSupabase();
 
@@ -198,10 +197,11 @@ async function setupLogout() {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
+
       // ローカルストレージのセッション情報を削除
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
-
+      //ローカルストレージがnullの場合のみアラートを出すように変更する
       alert("ログアウトしました。");
       window.location.href = "auth.html"; // ログインページに戻す
     } catch (err) {
@@ -210,5 +210,4 @@ async function setupLogout() {
   });
 }
 
-// ------------------ 初期化呼び出し ------------------
 init();

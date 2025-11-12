@@ -45,7 +45,6 @@ backToLoginBtn.addEventListener("click", () => {
   showSignupBtn.style.display = "inline-block";
 });
 
-// ================== 新規登録（Workers経由） ==================
 signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const button = e.target.querySelector("button");
@@ -63,16 +62,16 @@ signupForm.addEventListener("submit", async (e) => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "登録に失敗しました");
     alert("確認メールを送信しました。");
-    signupForm.style.display = "none";
-    loginForm.style.display = "none";
-    document.getElementById("show-signup-btn").style.display = "none";
-    document.getElementById("map").style.display = "none";
-    document.getElementById("title").style.display = "none";
 
     const messageEl = document.getElementById("signup-message");
     if (messageEl) {
       messageEl.textContent = "メールを確認してください。アカウントはまだ有効化されていません。";
       messageEl.style.display = "block";
+      signupForm.style.display = "none";
+      loginForm.style.display = "none";
+      document.getElementById("show-signup-btn").style.display = "none";
+      document.getElementById("map").style.display = "none";
+      document.getElementById("title").style.display = "none";
     }
   } catch (err) {
     alert("エラー: " + err.message);
@@ -81,7 +80,6 @@ signupForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ================== ログイン（Workers経由） ==================
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("login-email").value;
@@ -97,9 +95,7 @@ loginForm.addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
     localStorage.setItem("access_token", data.session.access_token);
     localStorage.setItem("refresh_token", data.session.refresh_token);
-
-    console.log("ログイン成功:", data.user);
-    window.location.href = "dashboard.html"; // ログイン後に移動
+    window.location.href = "dashboard.html";
   } catch (err) {
     alert("ログインエラー: " + err.message);
   }
