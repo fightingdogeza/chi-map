@@ -225,7 +225,7 @@ async function loadPins() {
           <p><strong>カテゴリー:</strong> ${categoryName}</p>
           <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
           ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;">` : ''}
-          ${showDelete ? `<button id="deleteBtn">削除</button>` : ''}
+          ${showDelete ? `<br><button id="deleteBtn">削除</button>` : ''}
         </div>
       `;
       infoWindow.setContent(content);
