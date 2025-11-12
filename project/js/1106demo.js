@@ -27,7 +27,6 @@ async function initSupabase() {
 
   // Supabaseクライアント初期化
   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-  console.log(" Supabase initialized:", supabaseUrl);
   return supabase;
 }
 
@@ -41,7 +40,6 @@ async function getCurrentUser() {
   getTokens();
 
   if (!access_token) {
-    console.log("トークンが存在しません。未ログイン状態です。");
     return null;
   }
 
@@ -68,10 +66,8 @@ async function getCurrentUser() {
     if (data.new_access_token) {
       localStorage.setItem("access_token", data.new_access_token);
       localStorage.setItem("refresh_token", data.new_refresh_token);
-      console.log("トークンを更新しました");
     }
 
-    console.log("ログイン中:", data.user);
     return data.user;
 
   } catch (err) {
@@ -202,7 +198,6 @@ async function loadPins() {
   try {
     pins = JSON.parse(text);
   } catch {
-    console.error("JSON変換エラー:", text);
     return;
   }
   markers.forEach(m => m.setMap(null));
@@ -260,7 +255,6 @@ async function loadPins() {
               }),
             });
 
-            console.log(pin.imagePath);
             const result = await response.json();
             if (!response.ok) {
               alert("削除に失敗しました: " + (result.error || "不明なエラー"));
@@ -284,8 +278,6 @@ function startRealtimeListener() {
 
   eventSource.onmessage = (event) => {
     const pin = JSON.parse(event.data);
-    console.log("新しいピン:", pin);
-
     // Google Maps に追加
     new google.maps.Marker({
       position: { lat: pin.lat, lng: pin.lng },

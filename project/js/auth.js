@@ -3,7 +3,6 @@ let supabase = null;
 async function initSupabase() {
   // Supabaseライブラリをグローバルから参照
   if (typeof window.supabase === 'undefined') {
-    console.error("Supabaseライブラリが読み込まれていません。");
     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
     return;
   }
@@ -18,7 +17,6 @@ async function initSupabase() {
 
   // Supabaseクライアント初期化
   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-  console.log("Supabase initialized:", supabaseUrl);
   return supabase;
 }
 

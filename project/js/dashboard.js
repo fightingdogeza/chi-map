@@ -27,7 +27,6 @@ async function getCurrentUser() {
   const refresh_token = localStorage.getItem("refresh_token");
 
   if (!access_token) {
-    console.log("トークンが存在しません。未ログイン状態です。");
     return null;
   }
 
@@ -54,10 +53,8 @@ async function getCurrentUser() {
     if (data.new_access_token) {
       localStorage.setItem("access_token", data.new_access_token);
       localStorage.setItem("refresh_token", data.new_refresh_token);
-      console.log("トークンを更新しました");
     }
 
-    console.log("ログイン中:", data.user);
     return data.user;
 
   } catch (err) {
