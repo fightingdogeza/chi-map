@@ -127,7 +127,7 @@ forgotForm.addEventListener("submit", async (e) => {
 
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost/project/reset-confirm.html", // メール内リンク先
+      redirectTo: "http://webapp-bka.pages.dev/reset-confirm.html", // メール内リンク先
     });
     if (error) throw error;
     alert("パスワードリセット用のメールを送信しました。受信ボックスを確認してください。");

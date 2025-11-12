@@ -84,10 +84,8 @@ async function init() {
   const content = document.getElementById("content");
 
   if (role === "admin") {
-    content.innerHTML = `<h2>管理者ページ</h2><p>すべての投稿を管理できます。</p>`;
     await loadAllPinsForAdmin();
   } else {
-    content.innerHTML = `<h2>一般ユーザー</h2><p>自分の投稿だけ管理できます。</p>`;
     await loadDashboardPins(user.id);
   }
 }
@@ -102,7 +100,6 @@ async function deletePin(pin) {
   }
   const access_token = localStorage.getItem("access_token");
   const refresh_token = localStorage.getItem("refresh_token");
-  console.log(pin.id,pin.image_path,access_token,refresh_token);
   
   const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/delete-pin', {
     method: 'POST',

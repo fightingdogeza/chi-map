@@ -59,7 +59,6 @@ async function getCurrentUser() {
     // --- 無効または期限切れ ---
     if (!res.ok || !data.loggedIn) {
       console.warn("認証エラー:", data.message || data.error);
-      //トークンをここで格納しておく
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
       return null;
@@ -317,7 +316,6 @@ async function updateNavMenu() {
   } catch (error) {
     console.error("ログイン確認エラー:", error);
 
-    // --- トークン無効またはエラー時 ---
     navLoginBtn.textContent = "ログイン";
     navLoginBtn.onclick = () => window.location.href = "auth.html";
   }
