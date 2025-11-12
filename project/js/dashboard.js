@@ -14,7 +14,6 @@ async function initSupabase() {
   // Workerから環境変数を取得
   const res = await fetch('https://delete-pin-worker.chi-map.workers.dev/init-supabase');
   const { supabaseUrl, supabaseAnonKey } = await res.json();
-
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error("SupabaseのURLまたはキーが取得できません。");
   }

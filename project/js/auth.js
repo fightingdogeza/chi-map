@@ -28,6 +28,9 @@ const signupForm = document.getElementById("signup-form");
 const loginForm = document.getElementById("login-form");
 const backToLoginBtn = document.getElementById("back-to-login-btn");
 const mapToBtn = document.getElementById("map");
+const forgotLink = document.getElementById("show-forgot-form");
+const forgotForm = document.getElementById("forgot-form");
+const backToLogin = document.getElementById("back-to-login");
 
 // --- フォーム切替 ---
 showSignupBtn.addEventListener("click", () => {
@@ -102,7 +105,40 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
+
 // --- 地図へ戻るボタン ---
 mapToBtn.addEventListener("click", function () {
   window.location.href = "index.html";
+});
+
+
+forgotLink.addEventListener("click", (e) => {
+  e.preventDefault();
+  loginForm.style.display = "none";
+  forgotForm.style.display = "block";
+});
+
+backToLogin.addEventListener("click", (e) => {
+  e.preventDefault();
+  forgotForm.style.display = "none";
+  loginForm.style.display = "block";
+});
+forgotForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("forgot-email").value;
+  const button = forgotForm.querySelector("button");
+  button.disabled = true;
+
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "http://localhost/project/reset-confirm.html", // メール内リンク先
+    });
+    if (error) throw error;
+
+    alert("パスワードリセット用のメールを送信しました。受信ボックスを確認してください。");
+  } catch (err) {
+    alert("エラー: " + err.message);
+  } finally {
+    button.disabled = false;
+  }
 });

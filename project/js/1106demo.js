@@ -6,6 +6,8 @@ let selectedLatLng = null;
 let markers = [];
 let infoWindow = null;
 let supabase = null;
+let access_token = null;
+let refresh_token = null;
 
 async function initSupabase() {
   // Supabaseライブラリをグローバルから参照
@@ -35,22 +37,47 @@ const navLoginBtn = document.getElementById('nav-login');
 
 // --- 現在のログインユーザー取得 ---
 async function getCurrentUser() {
-  const token = localStorage.getItem("access_token");
-  if (!token) {
+  const access_token = localStorage.getItem("access_token");
+  const refresh_token = localStorage.getItem("refresh_token");
+
+  if (!access_token) {
     console.log("トークンが存在しません。未ログイン状態です。");
     return null;
   }
-  const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
 
-  const data = await res.json();
-  if (!res.ok) {
-    console.warn("認証エラー:", data.error);
+  try {
+    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "X-Refresh-Token": refresh_token, // refresh_tokenを一緒に送信
+      },
+    });
+
+    const data = await res.json();
+
+    // --- 無効または期限切れ ---
+    if (!res.ok || !data.loggedIn) {
+      console.warn("認証エラー:", data.message || data.error);
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      return null;
+    }
+
+    // --- 新しいトークンが返ってきた場合、更新 ---
+    if (data.new_access_token) {
+      localStorage.setItem("access_token", data.new_access_token);
+      localStorage.setItem("refresh_token", data.new_refresh_token);
+      console.log("トークンを更新しました");
+    }
+
+    console.log("ログイン中:", data.user);
+    return data.user;
+
+  } catch (err) {
+    console.error("通信エラー:", err);
     return null;
   }
-
-  return data.user;
 }
 
 // --- Google Map 初期化 ---
@@ -167,7 +194,6 @@ async function loadPins() {
   const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/get-all-pins', {
     headers: { "Content-Type": "application/json" }
   });
-
   const text = await response.text();
   let pins;
   try {
@@ -192,7 +218,6 @@ async function loadPins() {
     marker.addListener("click", () => {
       const categoryName = pin.categories?.name ?? "未分類";
       const showDelete = user && user.id === pin.uid;
-
       const content = `
         <div>
           <h3>${pin.title}</h3>
@@ -215,9 +240,7 @@ async function loadPins() {
               alert("削除権限がありません");
               return;
             }
-            const access_token = localStorage.getItem("access_token");
-            const refresh_token = localStorage.getItem("refresh_token");
-
+            getTokens();
             if (!access_token || !refresh_token) {
               alert("ログイン情報が無効です。再ログインしてください。");
               return;
@@ -230,9 +253,11 @@ async function loadPins() {
                 id: pin.id,
                 imagePath: pin.image_path,
                 access_token,
-                refresh_token
+                refresh_token 
               }),
             });
+
+            console.log(pin.imagePath);
             const result = await response.json();
             if (!response.ok) {
               alert("削除に失敗しました: " + (result.error || "不明なエラー"));
@@ -267,32 +292,45 @@ function startRealtimeListener() {
     .subscribe();
 }
 
-// --- 下部メニュー ---
 async function updateNavMenu() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
+  try {
+    getTokens();
+    if (!access_token || !refresh_token) {
+      // 未ログイン時
+      navLoginBtn.textContent = "ログイン";
+      navLoginBtn.onclick = () => window.location.href = "auth.html";
+      console.error("naiyo");
+      return;
+    }
+
+    // --- ログイン中UI反映 ---
     navLoginBtn.textContent = "一覧";
     navLoginBtn.onclick = () => window.location.href = "dashboard.html";
-  } else {
+
+  } catch (error) {
+    console.error("ログイン確認エラー:", error);
+
+    // --- トークン無効またはエラー時 ---
     navLoginBtn.textContent = "ログイン";
     navLoginBtn.onclick = () => window.location.href = "auth.html";
   }
 }
 
-
-// --- ページロード時の初期化 ---
 window.addEventListener('DOMContentLoaded', async () => {
   try {
-    await initSupabase(); // ← Supabase 初期化を待つ
-    await updateNavMenu(); // 状態変化のたびにUIを更新
+    await initSupabase();
+    await updateNavMenu();
 
-    // 初期化後にイベントリスナー登録
-    supabase.auth.onAuthStateChange(async (_event, session) => {
-      await updateNavMenu(); // 状態変化のたびにUIを更新
+    supabase.auth.onAuthStateChange(async () => {
+      await updateNavMenu();
     });
+
     initMap();
-    await updateNavMenu(); // ← 初期化後に呼び出す
   } catch (err) {
-    console.error("初期化中にエラーが発生:", err);
+    console.error("初期化エラー:", err);
   }
 });
+function getTokens() {
+  access_token = localStorage.getItem("access_token");
+  refresh_token = localStorage.getItem("refresh_token");
+}
