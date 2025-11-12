@@ -50,7 +50,6 @@ signupForm.addEventListener("submit", async (e) => {
 
   const email = await document.getElementById("signup-email").value;
   const password = await document.getElementById("signup-password").value;
-  console.log("email:", email, "password:", password); // ← 実際に入力された値が表示されるか
 
   try {
     const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/register", {
