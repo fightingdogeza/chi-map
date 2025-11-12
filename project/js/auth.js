@@ -119,5 +119,6 @@ mapToBtn.addEventListener("click", () => {
   window.location.href = "index.html";
 });
 
-// --- Supabase 初期化を即実行 ---
-initSupabase().catch(err => console.error(err));
+document.addEventListener('DOMContentLoaded', () => {
+  initSupabase().catch(err => console.error(err));
+});
