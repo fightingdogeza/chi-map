@@ -1,18 +1,5 @@
 let supabase = null;
 
-// --- URLハッシュからアクセストークン取得（サインアップ後リダイレクト用） ---
-function restoreSessionFromHash() {
-  const hash = window.location.hash.substring(1); // # を除去
-  if (!hash) return;
-  const params = new URLSearchParams(hash);
-  const access_token = params.get("access_token");
-  const refresh_token = params.get("refresh_token");
-
-  if (access_token && refresh_token && supabase) {
-    supabase.auth.setSession({ access_token, refresh_token })
-      .then(() => console.log("ログイン状態を復元しました"));
-  }
-}
 
 // --- Supabase 初期化 ---
 async function initSupabase() {
@@ -32,6 +19,19 @@ async function initSupabase() {
   restoreSessionFromHash();
 
   return supabase;
+}
+// --- URLハッシュからアクセストークン取得（サインアップ後リダイレクト用） ---
+function restoreSessionFromHash() {
+  const hash = window.location.hash.substring(1); // # を除去
+  if (!hash) return;
+  const params = new URLSearchParams(hash);
+  const access_token = params.get("access_token");
+  const refresh_token = params.get("refresh_token");
+
+  if (access_token && refresh_token && supabase) {
+    supabase.auth.setSession({ access_token, refresh_token })
+      .then(() => console.log("ログイン状態を復元しました"));
+  }
 }
 
 // --- DOM要素 ---
