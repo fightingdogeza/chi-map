@@ -72,10 +72,9 @@ async function getCurrentUser() {
 async function init() {
   await initSupabase(); // ← まずここでSupabaseを初期化
   if (!supabase) {
-    // console.error("Supabase初期化に失敗しました。");
+    alert("Supabaseの初期化に失敗しました。");
     return;
   }
-
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
@@ -178,10 +177,36 @@ document.getElementById("map").addEventListener('click', () => {
 });
 
 document.getElementById("logout").addEventListener("click", async () => {
-  await supabase.auth.signOut();
+  await setupLogout();
   localStorage.removeItem('supabase_session');
   window.location.href = "auth.html";
 });
+async function setupLogout() {
+  await initSupabase();
+
+  const logoutBtn = document.getElementById("logout");
+  if (!logoutBtn) {
+    console.warn("ログアウトボタンが見つかりません。");
+    return;
+  }
+
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      // Supabaseセッションの無効化
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      // ローカルストレージのセッション情報を削除
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+
+      alert("ログアウトしました。");
+      window.location.href = "auth.html"; // ログインページに戻す
+    } catch (err) {
+      alert("ログアウトに失敗しました: " + err.message);
+    }
+  });
+}
 
 // ------------------ 初期化呼び出し ------------------
 init();
