@@ -134,7 +134,6 @@ forgotForm.addEventListener("submit", async (e) => {
       redirectTo: "http://localhost/project/reset-confirm.html", // メール内リンク先
     });
     if (error) throw error;
-
     alert("パスワードリセット用のメールを送信しました。受信ボックスを確認してください。");
   } catch (err) {
     alert("エラー: " + err.message);

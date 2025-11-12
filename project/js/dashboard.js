@@ -4,7 +4,6 @@ let supabase = null;
 
 async function initSupabase() {
   // Supabaseライブラリをグローバルから参照
-  // CDN経由で読み込まれている前提（例: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>）
   if (typeof window.supabase === 'undefined') {
     console.error("Supabaseライブラリが読み込まれていません。");
     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
