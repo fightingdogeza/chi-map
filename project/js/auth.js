@@ -106,32 +106,32 @@ mapToBtn.addEventListener("click", function () {
 });
 
 
-forgotLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  loginForm.style.display = "none";
-  forgotForm.style.display = "block";
-});
+// forgotLink.addEventListener("click", (e) => {
+//   e.preventDefault();
+//   loginForm.style.display = "none";
+//   forgotForm.style.display = "block";
+// });
 
 backToLogin.addEventListener("click", (e) => {
   e.preventDefault();
   forgotForm.style.display = "none";
   loginForm.style.display = "block";
 });
-forgotForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("forgot-email").value;
-  const button = forgotForm.querySelector("button");
-  button.disabled = true;
+// forgotForm.addEventListener("submit", async (e) => {
+//   e.preventDefault();
+//   const email = document.getElementById("forgot-email").value;
+//   const button = forgotForm.querySelector("button");
+//   button.disabled = true;
 
-  try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://webapp-bka.pages.dev/reset-confirm.html", // メール内リンク先
-    });
-    if (error) throw error;
-    alert("パスワードリセット用のメールを送信しました。受信ボックスを確認してください。");
-  } catch (err) {
-    alert("エラー: " + err.message);
-  } finally {
-    button.disabled = false;
-  }
-});
+//   try {
+//     const { error } = await supabase.auth.resetPasswordForEmail(email, {
+//       redirectTo: "http://webapp-bka.pages.dev/reset-confirm.html", // メール内リンク先
+//     });
+//     if (error) throw error;
+//     alert("パスワードリセット用のメールを送信しました。受信ボックスを確認してください。");
+//   } catch (err) {
+//     alert("エラー: " + err.message);
+//   } finally {
+//     button.disabled = false;
+//   }
+// });
