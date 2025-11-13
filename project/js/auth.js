@@ -1,4 +1,10 @@
 let supabase = null;
+  // --- DOM要素取得 ---
+  let showSignupBtn = null;
+  let signupForm = null;
+  let loginForm = null;
+  let backToLoginBtn = null;
+  let mapToBtn = null;
 
 
 // --- Supabase 初期化 ---
@@ -98,11 +104,11 @@ loginForm.addEventListener("submit", async (e) => {
 
 document.addEventListener("DOMContentLoaded", async () => {
   // --- DOM要素取得 ---
-  const showSignupBtn = document.getElementById("show-signup-btn");
-  const signupForm = document.getElementById("signup-form");
-  const loginForm = document.getElementById("login-form");
-  const backToLoginBtn = document.getElementById("back-to-login-btn");
-  const mapToBtn = document.getElementById("map");
+  showSignupBtn = document.getElementById("show-signup-btn");
+  signupForm = document.getElementById("signup-form");
+  loginForm = document.getElementById("login-form");
+  backToLoginBtn = document.getElementById("back-to-login-btn");
+  mapToBtn = document.getElementById("map");
 
   // --- イベント登録 ---
   showSignupBtn.addEventListener("click", () => {
