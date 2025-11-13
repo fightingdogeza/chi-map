@@ -66,6 +66,7 @@ async function init() {
   }
 
   const role = user.role;
+  console.log(user);
   if (role === "admin") {
     await loadAllPinsForAdmin();
   } else {
