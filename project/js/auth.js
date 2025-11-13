@@ -28,15 +28,17 @@ const signupForm = document.getElementById("signup-form");
 const loginForm = document.getElementById("login-form");
 const backToLoginBtn = document.getElementById("back-to-login-btn");
 const mapToBtn = document.getElementById("map");
-const forgotLink = document.getElementById("show-forgot-form");
-const forgotForm = document.getElementById("forgot-form");
+// const forgotLink = document.getElementById("show-forgot-form");
+// const forgotForm = document.getElementById("forgot-form");
 const backToLogin = document.getElementById("back-to-login");
 
 // --- フォーム切替 ---
 showSignupBtn.addEventListener("click", () => {
   loginForm.style.display = "none";
-  showSignupBtn.style.display = "none";
+  showSignupBtn.style.display = "none"; 
   signupForm.style.display = "flex";
+  document.getElementById("signup-email").value = null;
+  document.getElementById("signup-password").value = null;
 });
 
 backToLoginBtn.addEventListener("click", () => {
@@ -97,10 +99,7 @@ loginForm.addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
     localStorage.setItem("access_token", data.session.access_token);
     localStorage.setItem("refresh_token", data.session.refresh_token);
-
-    console.log("ログイン成功:", data.user);
-    console.log(data.session.access_token,"data.session.refresh_token",data.session.refresh_token);
-    // window.location.href = "dashboard.html"; // ログイン後に移動
+    window.location.href = "dashboard.html"; // ログイン後に移動
   } catch (err) {
     alert("ログインエラー: " + err.message);
   }
