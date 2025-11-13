@@ -94,6 +94,10 @@ loginForm.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
+    if(data.access_token && data.refresh_token){
+      localStorage.setItem("access_token",data.access_token);
+      localStorage.setItem("refresh_token",data.refresh_token);
+    }
     localStorage.getItem("access_token");
     localStorage.getItem("refresh_token");
     console.log(access_token,refresh_token);
