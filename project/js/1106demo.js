@@ -275,7 +275,7 @@ function startRealtimeListener() {
     new google.maps.Marker({
       position: { lat: Number(pin.lat), lng: Number(pin.lng) },
       map: map,
-      icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+      icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
       title: pin.title,
     });
   };
