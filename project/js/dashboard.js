@@ -143,6 +143,7 @@ function renderPins(pins) {
   const container = document.getElementById("content");
   container.innerHTML = "";
 
+  console.log(localStorage.getItem("access_token"));
   if (!pins || pins.length === 0) {
     container.innerHTML = "<p>投稿がありません。</p>";
     return;
