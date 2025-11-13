@@ -98,8 +98,8 @@ loginForm.addEventListener("submit", async (e) => {
       localStorage.setItem("access_token",data.access_token);
       localStorage.setItem("refresh_token",data.refresh_token);
     }
-    localStorage.getItem("access_token");
-    localStorage.getItem("refresh_token");
+    // localStorage.getItem("access_token");
+    // localStorage.getItem("refresh_token");
     console.log(access_token,refresh_token);
     if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
 
