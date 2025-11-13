@@ -97,8 +97,8 @@ loginForm.addEventListener("submit", async (e) => {
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
-    localStorage.setItem("access_token", data.session.access_token);
-    localStorage.setItem("refresh_token", data.session.refresh_token);
+    localStorage.setItem("access_token", data.access_token);
+    localStorage.setItem("refresh_token", data.refresh_token);
     window.location.href = "dashboard.html"; // ログイン後に移動
   } catch (err) {
     alert("ログインエラー: " + err.message);
