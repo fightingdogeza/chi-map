@@ -5,7 +5,6 @@ async function initSupabase() {
   // Supabaseライブラリが読み込まれているか確認
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
-    alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
     return;
   }
 
@@ -66,14 +65,10 @@ async function init() {
     return;
   }
 
-  const role = user.user_metadata?.role || "user";
-  const content = document.getElementById("content");
-
+  const role = user.role;
   if (role === "admin") {
-    content.innerHTML = `<h2>管理者ページ</h2><p>すべての投稿を管理できます。</p>`;
     await loadAllPinsForAdmin();
   } else {
-    content.innerHTML = `<h2>一般ユーザー</h2><p>自分の投稿だけ管理できます。</p>`;
     await loadDashboardPins(user.id);
   }
 }
@@ -83,7 +78,7 @@ async function deletePin(pin) {
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインしてください");
-    window.location.href = "auth.html";
+    window.location.href = "https://chi-map.pages.dev/auth";
     return;
   }
 
