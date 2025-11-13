@@ -94,7 +94,7 @@ window.initMap = function () {
     user = await getCurrentUser();
     if (!user) {
       alert("ログインしてください");
-      window.location.href = "index.html";
+      window.location.href = "auth.html";
       return;
     }
 
@@ -154,7 +154,7 @@ function setupPost() {
     user = await getCurrentUser();
     if (!user) {
       alert("ログインが切れています。再度ログインしてください。");
-      window.location.href = "index.html";
+      window.location.href = "auth.html";
       return;
     }
     let formData = new FormData();
@@ -280,7 +280,7 @@ function startRealtimeListener() {
     const pin = JSON.parse(event.data);
     // Google Maps に追加
     new google.maps.Marker({
-      position: { lat: pin.lat, lng: pin.lng },
+      position: { lat: Number(pin.lat), lng: Number(pin.lng) },
       map: map,
       icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
       title: pin.title,
@@ -299,7 +299,7 @@ async function updateNavMenu() {
     if (!user) {
       // 未ログイン時
       navLoginBtn.textContent = "ログイン";
-      navLoginBtn.onclick = () => window.location.href = "index.html";
+      navLoginBtn.onclick = () => window.location.href = "auth.html";
       return;
     }
     // --- ログイン中UI反映 ---
@@ -309,7 +309,7 @@ async function updateNavMenu() {
     console.error("ログイン確認エラー:", error);
 
     navLoginBtn.textContent = "ログイン";
-    navLoginBtn.onclick = () => window.location.href = "index.html";
+    navLoginBtn.onclick = () => window.location.href = "auth.html";
   }
 }
 
@@ -317,7 +317,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     await initSupabase();
     await updateNavMenu();
-    // initMap();
   } catch (err) {
     console.error("初期化エラー:", err);
   }

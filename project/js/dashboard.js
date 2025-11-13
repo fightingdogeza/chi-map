@@ -73,7 +73,7 @@ async function init() {
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
-    window.location.href = "index.html";
+    window.location.href = "auth.html";
     return;
   }
 
@@ -167,13 +167,13 @@ function renderPins(pins) {
 
 //マップへ戻るボタン
 document.getElementById("map").addEventListener('click', () => {
-  window.location.href = "map.html";
+  window.location.href = "index.html";
 });
 //ログアウトボタン
 document.getElementById("logout").addEventListener("click", async () => {
   await setupLogout();
   localStorage.removeItem('supabase_session');
-  window.location.href = "index.html";
+  window.location.href = "auth.html";
 });
 
 async function setupLogout() {
