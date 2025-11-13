@@ -33,7 +33,7 @@ const backToLogin = document.getElementById("back-to-login");
 // --- フォーム切替 ---
 showSignupBtn.addEventListener("click", () => {
   loginForm.style.display = "none";
-  showSignupBtn.style.display = "none"; 
+  showSignupBtn.style.display = "none";
   signupForm.style.display = "flex";
   document.getElementById("signup-email").value = null;
   document.getElementById("signup-password").value = null;
@@ -94,9 +94,11 @@ loginForm.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
     localStorage.setItem("access_token", data.access_token);
     localStorage.setItem("refresh_token", data.refresh_token);
+    console.log(access_token,refresh_token);
+    if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
+
     window.location.href = "https://chi-map.pages.dev/dashboard"; // ログイン後に移動
   } catch (err) {
     alert("ログインエラー: " + err.message);
@@ -106,7 +108,7 @@ loginForm.addEventListener("submit", async (e) => {
 
 // --- 地図へ戻るボタン ---
 mapToBtn.addEventListener("click", function () {
-  window.location.href = "index.html";
+  window.location.href = "https://chi-map.pages.dev";
 });
 
 

@@ -14,7 +14,6 @@ async function initSupabase() {
   // Supabaseライブラリをグローバルから参照
   if (typeof window.supabase === 'undefined') {
     console.error("Supabaseライブラリが読み込まれていません。");
-    alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
     return;
   }
   // Workerから環境変数を取得
@@ -29,20 +28,14 @@ async function initSupabase() {
   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
   return supabase;
 }
-
-
-
 // --- 下部メニュー ---
 const navLoginBtn = document.getElementById('nav-login');
-
 // --- 現在のログインユーザー取得 ---
 async function getCurrentUser() {
   getTokens();
-
   if (!access_token) {
     return null;
   }
-
   try {
     const res = await fetch("https://environment.chi-map.workers.dev/me", {
       method: "GET",
@@ -81,7 +74,7 @@ window.initMap = function () {
   const initialLatLng = { lat: 35.6811673, lng: 139.7670516 };
   map = new google.maps.Map(document.getElementById("map"), {
     center: initialLatLng,
-    zoom: 15,
+    zoom: 19,
   });
 
   loadPins();
