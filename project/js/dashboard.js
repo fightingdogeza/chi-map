@@ -73,7 +73,7 @@ async function init() {
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
-    window.location.href = "auth.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -92,7 +92,7 @@ async function deletePin(pin) {
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインしてください");
-    window.location.href = "auth.html";
+    window.location.href = "index.html";
     return;
   }
   const access_token = localStorage.getItem("access_token");
@@ -167,13 +167,13 @@ function renderPins(pins) {
 
 //マップへ戻るボタン
 document.getElementById("map").addEventListener('click', () => {
-  window.location.href = "index.html";
+  window.location.href = "map.html";
 });
 //ログアウトボタン
 document.getElementById("logout").addEventListener("click", async () => {
   await setupLogout();
   localStorage.removeItem('supabase_session');
-  window.location.href = "auth.html";
+  window.location.href = "index.html";
 });
 
 async function setupLogout() {
@@ -197,7 +197,7 @@ async function setupLogout() {
       localStorage.removeItem("refresh_token");
       //ローカルストレージがnullの場合のみアラートを出すように変更する
       alert("ログアウトしました。");
-      window.location.href = "auth.html"; // ログインページに戻す
+      window.location.href = "index.html"; // ログインページに戻す
     } catch (err) {
       alert("ログアウトに失敗しました: " + err.message);
     }

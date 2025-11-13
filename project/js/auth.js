@@ -34,26 +34,6 @@ function restoreSessionFromHash() {
   }
 }
 
-// --- DOM要素 ---
-const showSignupBtn = document.getElementById("show-signup-btn");
-const signupForm = document.getElementById("signup-form");
-const loginForm = document.getElementById("login-form");
-const backToLoginBtn = document.getElementById("back-to-login-btn");
-const mapToBtn = document.getElementById("map");
-
-// --- フォーム切替 ---
-showSignupBtn.addEventListener("click", () => {
-  loginForm.style.display = "none";
-  showSignupBtn.style.display = "none";
-  signupForm.style.display = "flex";
-});
-
-backToLoginBtn.addEventListener("click", () => {
-  signupForm.style.display = "none";
-  loginForm.style.display = "flex";
-  showSignupBtn.style.display = "inline-block";
-});
-
 // --- サインアップ ---
 signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -114,11 +94,34 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// --- 地図へ戻る ---
-mapToBtn.addEventListener("click", () => {
-  window.location.href = "index.html";
-});
 
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // --- DOM要素取得 ---
+  const showSignupBtn = document.getElementById("show-signup-btn");
+  const signupForm = document.getElementById("signup-form");
+  const loginForm = document.getElementById("login-form");
+  const backToLoginBtn = document.getElementById("back-to-login-btn");
+  const mapToBtn = document.getElementById("map");
+
+  // --- イベント登録 ---
+  showSignupBtn.addEventListener("click", () => {
+    loginForm.style.display = "none";
+    showSignupBtn.style.display = "none";
+    signupForm.style.display = "flex";
+  });
+
+  backToLoginBtn.addEventListener("click", () => {
+    signupForm.style.display = "none";
+    loginForm.style.display = "flex";
+    showSignupBtn.style.display = "inline-block";
+  });
+
+  mapToBtn.addEventListener("click", () => {
+    window.location.href = "map.html";
+  });
+
+  // --- Supabase初期化 ---
+  await waitForSupabase();
   initSupabase().catch(err => console.error(err));
 });

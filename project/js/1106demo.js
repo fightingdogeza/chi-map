@@ -94,7 +94,7 @@ window.initMap = function () {
     user = await getCurrentUser();
     if (!user) {
       alert("ログインしてください");
-      window.location.href = "auth.html";
+      window.location.href = "index.html";
       return;
     }
 
@@ -154,7 +154,7 @@ function setupPost() {
     user = await getCurrentUser();
     if (!user) {
       alert("ログインが切れています。再度ログインしてください。");
-      window.location.href = "auth.html";
+      window.location.href = "index.html";
       return;
     }
     let formData = new FormData();
@@ -299,7 +299,7 @@ async function updateNavMenu() {
     if (!user) {
       // 未ログイン時
       navLoginBtn.textContent = "ログイン";
-      navLoginBtn.onclick = () => window.location.href = "auth.html";
+      navLoginBtn.onclick = () => window.location.href = "index.html";
       return;
     }
     // --- ログイン中UI反映 ---
@@ -309,7 +309,7 @@ async function updateNavMenu() {
     console.error("ログイン確認エラー:", error);
 
     navLoginBtn.textContent = "ログイン";
-    navLoginBtn.onclick = () => window.location.href = "auth.html";
+    navLoginBtn.onclick = () => window.location.href = "index.html";
   }
 }
 
