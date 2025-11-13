@@ -99,7 +99,8 @@ loginForm.addEventListener("submit", async (e) => {
     localStorage.setItem("refresh_token", data.session.refresh_token);
 
     console.log("ログイン成功:", data.user);
-    window.location.href = "dashboard.html"; // ログイン後に移動
+    console.log(data.session.access_token,"data.session.refresh_token",data.session.refresh_token);
+    // window.location.href = "dashboard.html"; // ログイン後に移動
   } catch (err) {
     alert("ログインエラー: " + err.message);
   }
@@ -112,17 +113,19 @@ mapToBtn.addEventListener("click", function () {
 });
 
 
+backToLogin.addEventListener("click", (e) => {
+  e.preventDefault();
+  forgotForm.style.display = "none";
+  loginForm.style.display = "block";
+});
+
+
 // forgotLink.addEventListener("click", (e) => {
 //   e.preventDefault();
 //   loginForm.style.display = "none";
 //   forgotForm.style.display = "block";
 // });
 
-backToLogin.addEventListener("click", (e) => {
-  e.preventDefault();
-  forgotForm.style.display = "none";
-  loginForm.style.display = "block";
-});
 // forgotForm.addEventListener("submit", async (e) => {
 //   e.preventDefault();
 //   const email = document.getElementById("forgot-email").value;

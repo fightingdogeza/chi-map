@@ -1,75 +1,64 @@
-
+// ================== Supabase 初期化 ==================
 let supabase = null;
 
 async function initSupabase() {
-  // Supabaseライブラリをグローバルから参照
-  if (typeof window.supabase === 'undefined') {
+  // Supabaseライブラリが読み込まれているか確認
+  if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
     return;
   }
 
-  // Workerから環境変数を取得
-  const res = await fetch('https://delete-pin-worker.chi-map.workers.dev/init-supabase');
-  const { supabaseUrl, supabaseAnonKey } = await res.json();
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("SupabaseのURLまたはキーが取得できません。");
-  }
+  try {
+    // WorkerからSupabase設定を取得
+    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/init-supabase");
+    const { supabaseUrl, supabaseAnonKey } = await res.json();
 
-  // Supabaseクライアント初期化
-  supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-  return supabase;
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error("SupabaseのURLまたはキーが取得できません。");
+    }
+
+    // Supabaseクライアント初期化
+    supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+    console.log(" Supabase initialized:", supabaseUrl);
+    return supabase;
+  } catch (err) {
+    console.error(" Supabase初期化エラー:", err);
+    alert("Supabaseの初期化に失敗しました。");
+  }
 }
 
 // ------------------ 現在のログインユーザー取得 ------------------
 async function getCurrentUser() {
-  const access_token = localStorage.getItem("access_token");
-  const refresh_token = localStorage.getItem("refresh_token");
-
-  if (!access_token) {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    console.log("トークンが存在しません。未ログイン状態です。");
     return null;
   }
 
   try {
     const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "X-Refresh-Token": refresh_token, // refresh_tokenを一緒に送信
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     const data = await res.json();
-
-    // --- 無効または期限切れ ---
-    if (!res.ok || !data.loggedIn) {
-      console.warn("認証エラー:", data.message || data.error);
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
+    if (!res.ok) {
+      console.warn("認証エラー:", data.error);
       return null;
     }
 
-    // --- 新しいトークンが返ってきた場合、更新 ---
-    if (data.new_access_token) {
-      localStorage.setItem("access_token", data.new_access_token);
-      localStorage.setItem("refresh_token", data.new_refresh_token);
-    }
-
     return data.user;
-
   } catch (err) {
-    console.error("通信エラー:", err);
+    console.error("ユーザー情報取得エラー:", err);
     return null;
   }
 }
 
 // ------------------ 初期化 ------------------
 async function init() {
-  await initSupabase(); // ← まずここでSupabaseを初期化
-  if (!supabase) {
-    alert("Supabaseの初期化に失敗しました。");
-    return;
-  }
+  await initSupabase();
+  if (!supabase) return;
+
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
@@ -81,70 +70,91 @@ async function init() {
   const content = document.getElementById("content");
 
   if (role === "admin") {
+    content.innerHTML = `<h2>管理者ページ</h2><p>すべての投稿を管理できます。</p>`;
     await loadAllPinsForAdmin();
   } else {
+    content.innerHTML = `<h2>一般ユーザー</h2><p>自分の投稿だけ管理できます。</p>`;
     await loadDashboardPins(user.id);
   }
 }
 
-// ------------------ Worker 経由削除関数 ------------------
+// ------------------ 投稿削除（Worker経由） ------------------
 async function deletePin(pin) {
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインしてください");
-    window.location.href = "index.html";
+    window.location.href = "auth.html";
     return;
   }
+
   const access_token = localStorage.getItem("access_token");
   const refresh_token = localStorage.getItem("refresh_token");
-  
-  const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/delete-pin', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      id: pin.id,
-      imagePath: pin.image_path,
-      access_token,
-      refresh_token
-    })
-  });
 
-  const result = await response.json();
+  try {
+    const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/delete-pin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: pin.id,
+        imagePath: pin.image_path,
+        access_token,
+        refresh_token,
+      }),
+    });
 
-  if (result.success) {
-    alert('削除しました');
-    document.getElementById(`pin-${pin.id}`).remove();
-  } else {
-    alert(result.error || '削除できませんでした');
+    const result = await response.json();
+
+    if (result.success) {
+      alert("削除しました");
+      document.getElementById(`pin-${pin.id}`)?.remove();
+    } else {
+      alert(result.error || "削除できませんでした");
+    }
+  } catch (err) {
+    console.error("削除エラー:", err);
+    alert("削除中にエラーが発生しました。");
   }
 }
+
 // ------------------ 管理者用 全投稿取得 ------------------
 async function loadAllPinsForAdmin() {
-  const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/get-all-pins', {
-    headers: { 'x-user-role': 'admin' }
-  });
-  const pins = await response.json();
-  renderPins(pins);
+  try {
+    const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/get-all-pins", {
+      headers: { "x-user-role": "admin" },
+    });
+    const pins = await response.json();
+    renderPins(pins);
+  } catch (err) {
+    console.error("全投稿取得エラー:", err);
+  }
 }
+
 // ------------------ 自分の投稿を取得 ------------------
 async function loadDashboardPins(userId) {
-  const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/get-user-pins', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId })
-  });
-
-  const pins = await response.json();
-  renderPins(pins);
+  try {
+    const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/get-user-pins", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+    const pins = await response.json();
+    renderPins(pins);
+  } catch (err) {
+    console.error("自分の投稿取得エラー:", err);
+  }
 }
-
 
 // ------------------ 投稿カード描画 ------------------
 function renderPins(pins) {
   const container = document.getElementById("content");
   container.innerHTML = "";
 
-  pins.forEach(pin => {
+  if (!pins || pins.length === 0) {
+    container.innerHTML = "<p>投稿がありません。</p>";
+    return;
+  }
+
+  pins.forEach((pin) => {
     const card = document.createElement("div");
     card.id = `pin-${pin.id}`;
     card.className = "pin-card";
@@ -156,52 +166,38 @@ function renderPins(pins) {
       <p>${pin.description}</p>
       <p><strong>カテゴリー:</strong> ${categoryName}</p>
       <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
-      ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;" />` : ''}
-      <br><button>削除</button>
+      ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;" />` : ""}
+      <button class="delete-btn">削除</button>
     `;
 
-    card.querySelector("button").addEventListener("click", () => deletePin(pin));
+    card.querySelector(".delete-btn").addEventListener("click", () => deletePin(pin));
     container.appendChild(card);
   });
 }
 
-//マップへ戻るボタン
-document.getElementById("map").addEventListener('click', () => {
+// ------------------ イベント ------------------
+
+// 地図に戻る
+document.getElementById("map").addEventListener("click", () => {
   window.location.href = "index.html";
 });
-//ログアウトボタン
+
+// ログアウト
 document.getElementById("logout").addEventListener("click", async () => {
-  await setupLogout();
-  localStorage.removeItem('supabase_session');
+  try {
+    await supabase.auth.signOut();
+  } catch (err) {
+    console.warn("Supabase signOutエラー:", err);
+  }
+
+  // カスタムトークン削除
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("supabase_session");
+
+  alert("ログアウトしました。");
   window.location.href = "auth.html";
 });
 
-async function setupLogout() {
-  await initSupabase();
-
-  const logoutBtn = document.getElementById("logout");
-  if (!logoutBtn) {
-    console.warn("ログアウトボタンが見つかりません。");
-    return;
-  }
-
-  logoutBtn.addEventListener("click", async () => {
-    try {
-      // Supabaseセッションの無効化
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-
-
-      // ローカルストレージのセッション情報を削除
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      //ローカルストレージがnullの場合のみアラートを出すように変更する
-      alert("ログアウトしました。");
-      window.location.href = "index.html"; // ログインページに戻す
-    } catch (err) {
-      alert("ログアウトに失敗しました: " + err.message);
-    }
-  });
-}
-
+// ------------------ 初期化呼び出し ------------------
 init();
