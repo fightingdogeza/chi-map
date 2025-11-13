@@ -94,8 +94,8 @@ loginForm.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
+    localStorage.getItem("access_token");
+    localStorage.getItem("refresh_token");
     console.log(access_token,refresh_token);
     if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
 
@@ -120,10 +120,10 @@ backToLogin.addEventListener("click", (e) => {
 
 
 function handleAuthRedirect() {
-  const hash = window.location.hash; // 例: #access_token=xxxxx&expires_in=3600...
+  const hash = window.location.hash;
   if (!hash) return;
 
-  const params = new URLSearchParams(hash.substring(1)); // '#'を除いてパース
+  const params = new URLSearchParams(hash.substring(1));
 
   const access_token = params.get("access_token");
   const refresh_token = params.get("refresh_token");
