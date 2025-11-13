@@ -117,3 +117,27 @@ backToLogin.addEventListener("click", (e) => {
   forgotForm.style.display = "none";
   loginForm.style.display = "block";
 });
+
+
+function handleAuthRedirect() {
+  const hash = window.location.hash; // 例: #access_token=xxxxx&expires_in=3600...
+  if (!hash) return;
+
+  const params = new URLSearchParams(hash.substring(1)); // '#'を除いてパース
+
+  const access_token = params.get("access_token");
+  const refresh_token = params.get("refresh_token");
+  const expires_in = params.get("expires_in");
+
+  if (access_token && refresh_token) {
+    console.log("トークンを保存しました");
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
+    localStorage.setItem("token_expiry", Date.now() + expires_in * 1000);
+
+    // ハッシュを消してURLをきれいにする
+    history.replaceState(null, "", "/");
+  }
+}
+// ページ読み込み時に実行
+document.addEventListener("DOMContentLoaded", handleAuthRedirect);
