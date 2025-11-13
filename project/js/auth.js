@@ -9,7 +9,7 @@ async function initSupabase() {
   }
 
   // Workerから環境変数を取得
-  const res = await fetch('https://delete-pin-worker.chi-map.workers.dev/init-supabase');
+  const res = await fetch('https://environment.chi-map.workers.dev/init-supabase');
   const { supabaseUrl, supabaseAnonKey } = await res.json();
 
   if (!supabaseUrl || !supabaseAnonKey) {
@@ -55,7 +55,7 @@ signupForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("signup-password").value;
 
   try {
-    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/register", {
+    const res = await fetch("https://environment.chi-map.workers.dev/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -87,7 +87,7 @@ loginForm.addEventListener("submit", async (e) => {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
   try {
-    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/login", {
+    const res = await fetch("https://environment.chi-map.workers.dev/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -97,7 +97,7 @@ loginForm.addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error(data.error || "ログインに失敗しました");
     localStorage.setItem("access_token", data.access_token);
     localStorage.setItem("refresh_token", data.refresh_token);
-    window.location.href = "dashboard.html"; // ログイン後に移動
+    window.location.href = "https://chi-map.pages.dev/dashboard"; // ログイン後に移動
   } catch (err) {
     alert("ログインエラー: " + err.message);
   }

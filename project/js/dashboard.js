@@ -11,7 +11,7 @@ async function initSupabase() {
 
   try {
     // WorkerからSupabase設定を取得
-    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/init-supabase");
+    const res = await fetch("https://environment.chi-map.workers.dev/init-supabase");
     const { supabaseUrl, supabaseAnonKey } = await res.json();
 
     if (!supabaseUrl || !supabaseAnonKey) {
@@ -37,7 +37,7 @@ async function getCurrentUser() {
   }
 
   try {
-    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
+    const res = await fetch("https://environment.chi-map.workers.dev/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -62,7 +62,7 @@ async function init() {
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
-    window.location.href = "auth.html";
+    window.location.href = "https://chi-map.pages.dev/auth";
     return;
   }
 
@@ -91,7 +91,7 @@ async function deletePin(pin) {
   const refresh_token = localStorage.getItem("refresh_token");
 
   try {
-    const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/delete-pin", {
+    const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -119,7 +119,7 @@ async function deletePin(pin) {
 // ------------------ 管理者用 全投稿取得 ------------------
 async function loadAllPinsForAdmin() {
   try {
-    const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/get-all-pins", {
+    const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
       headers: { "x-user-role": "admin" },
     });
     const pins = await response.json();
@@ -132,7 +132,7 @@ async function loadAllPinsForAdmin() {
 // ------------------ 自分の投稿を取得 ------------------
 async function loadDashboardPins(userId) {
   try {
-    const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/get-user-pins", {
+    const response = await fetch("https://environment.chi-map.workers.dev/get-user-pins", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
@@ -179,7 +179,7 @@ function renderPins(pins) {
 
 // 地図に戻る
 document.getElementById("map").addEventListener("click", () => {
-  window.location.href = "index.html";
+  window.location.href = "https://chi-map.pages.dev";
 });
 
 // ログアウト
@@ -196,7 +196,7 @@ document.getElementById("logout").addEventListener("click", async () => {
   localStorage.removeItem("supabase_session");
 
   alert("ログアウトしました。");
-  window.location.href = "auth.html";
+  window.location.href = "https://chi-map.pages.dev/auth";
 });
 
 // ------------------ 初期化呼び出し ------------------

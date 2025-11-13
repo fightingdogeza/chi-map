@@ -18,7 +18,7 @@ async function initSupabase() {
     return;
   }
   // Workerから環境変数を取得
-  const res = await fetch('https://delete-pin-worker.chi-map.workers.dev/init-supabase');
+  const res = await fetch('https://environment.chi-map.workers.dev/init-supabase');
   const { supabaseUrl, supabaseAnonKey } = await res.json();
 
   if (!supabaseUrl || !supabaseAnonKey) {
@@ -44,7 +44,7 @@ async function getCurrentUser() {
   }
 
   try {
-    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
+    const res = await fetch("https://environment.chi-map.workers.dev/me", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -94,7 +94,7 @@ window.initMap = function () {
     user = await getCurrentUser();
     if (!user) {
       alert("ログインしてください");
-      window.location.href = "auth.html";
+      window.location.href = "https://chi-map.pages.dev/auth";
       return;
     }
 
@@ -154,7 +154,7 @@ function setupPost() {
     user = await getCurrentUser();
     if (!user) {
       alert("ログインが切れています。再度ログインしてください。");
-      window.location.href = "auth.html";
+      window.location.href = "https://chi-map.pages.dev/auth";
       return;
     }
     let formData = new FormData();
@@ -168,7 +168,7 @@ function setupPost() {
       formData.append("image", fileInput.files[0]);
     }
     try {
-      const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/post-pin", {
+      const response = await fetch("https://environment.chi-map.workers.dev/post-pin", {
         method: "POST",
         body: formData,
       });
@@ -190,7 +190,7 @@ function setupPost() {
 }
 // --- ピン読み込み + 削除対応（Public） ---
 async function loadPins() {
-  const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/get-all-pins', {
+  const response = await fetch('https://environment.chi-map.workers.dev/get-all-pins', {
     headers: { "Content-Type": "application/json" }
   });
   const text = await response.text();
@@ -244,7 +244,7 @@ async function loadPins() {
               return;
             }
             // --- Storage の画像削除 ---
-            const response = await fetch('https://delete-pin-worker.chi-map.workers.dev/delete-pin', {
+            const response = await fetch('https://environment.chi-map.workers.dev/delete-pin', {
               method: "POST",
               headers: { "Content-Type": "application/json, charset=UTF-8" },
               body: JSON.stringify({
@@ -274,7 +274,7 @@ async function loadPins() {
 }
 
 function startRealtimeListener() {
-  const eventSource = new EventSource("https://delete-pin-worker.chi-map.workers.dev/realtime");
+  const eventSource = new EventSource("https://environment.chi-map.workers.dev/realtime");
 
   eventSource.onmessage = (event) => {
     const pin = JSON.parse(event.data);
@@ -299,17 +299,17 @@ async function updateNavMenu() {
     if (!user) {
       // 未ログイン時
       navLoginBtn.textContent = "ログイン";
-      navLoginBtn.onclick = () => window.location.href = "auth.html";
+      navLoginBtn.onclick = () => window.location.href = "https://chi-map.pages.dev/auth";
       return;
     }
     // --- ログイン中UI反映 ---
     navLoginBtn.textContent = "一覧";
-    navLoginBtn.onclick = () => window.location.href = "dashboard.html";
+    navLoginBtn.onclick = () => window.location.href = "https://chi-map.pages.dev/dashboard";
   } catch (error) {
     console.error("ログイン確認エラー:", error);
 
     navLoginBtn.textContent = "ログイン";
-    navLoginBtn.onclick = () => window.location.href = "auth.html";
+    navLoginBtn.onclick = () => window.location.href = "https://chi-map.pages.dev/auth";
   }
 }
 
