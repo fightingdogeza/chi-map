@@ -317,7 +317,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     await initSupabase();
     await updateNavMenu();
-    initMap();
+    // initMap();
   } catch (err) {
     console.error("初期化エラー:", err);
   }
