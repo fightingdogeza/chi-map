@@ -83,7 +83,6 @@ async function deletePin(pin) {
 
   const access_token = localStorage.getItem("access_token");
   const refresh_token = localStorage.getItem("refresh_token");
-
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
       method: "POST",
@@ -162,7 +161,7 @@ function renderPins(pins) {
       <p><strong>カテゴリー:</strong> ${categoryName}</p>
       <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
       ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;" />` : ""}
-      <button class="delete-btn">削除</button>
+      <br><button class="delete-btn">削除</button>
     `;
 
     card.querySelector(".delete-btn").addEventListener("click", () => deletePin(pin));
