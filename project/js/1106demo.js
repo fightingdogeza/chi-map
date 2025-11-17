@@ -132,8 +132,11 @@ function closeModal() {
 // --- 投稿フォーム ---
 function setupPost() {
   const form = document.getElementById("pinForm");
+  const submitbtn = document.getElementById("submitBtn");
+  submitbtn.style.display = "block";
 
   form.addEventListener("submit", async (e) => {
+    submitbtn.style.display = "none";
     e.preventDefault();
     if (!selectedLatLng) { alert("地図をクリックして位置を選択してください。"); return; }
 
@@ -174,10 +177,12 @@ function setupPost() {
       } else {
         console.error("投稿エラー:", result.error);
         alert("投稿に失敗しました。");
+        submitbtn.style.display = "block";
       }
     } catch (err) {
       console.error("投稿例外:", err);
       alert("投稿に失敗しました。");
+      submitbtn.style.display = "block";
     }
   });
 }
