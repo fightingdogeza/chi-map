@@ -4,15 +4,31 @@
 <head>
   <meta charset="UTF-8" />
   <title>ダッシュボード</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <link rel="stylesheet" href="./css/dashboard.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./js/dashboard.js"></script>
 </head>
+
 <body>
-  <h1>ダッシュボード</h1>
-  <div id="content"></div>
-  <button id="map">マップ</button>
-  <button id="logout">ログアウト</button>
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script defer src="./js/dashboard.js"></script>
+  <div class="dashboard-container">
+
+    <!-- ヘッダー -->
+    <div class="dashboard-header">
+      <h1>ちーまっぷ<br>
+      あなたの投稿一覧</h1>
+    </div>
+
+    <!-- コンテンツエリア -->
+    <div class="content-box" id="content"></div>
+
+    <!-- ボタンエリア -->
+    <div class="dashboard-footer">
+      <button id="map" class="btn map-btn">マップ</button>
+      <button id="logout" class="btn logout-btn">ログアウト</button>
+    </div>
+
+  </div>
 </body>
+
 </html>
