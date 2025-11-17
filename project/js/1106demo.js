@@ -21,7 +21,7 @@ async function initSupabase() {
     return;
   }
 
-  const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/init-supabase");
+  const res = await fetch("https://environment.chi-map.workers.dev/init-supabase");
   const { supabaseUrl, supabaseAnonKey } = await res.json();
 
   if (!supabaseUrl || !supabaseAnonKey) {
@@ -41,7 +41,7 @@ async function getCurrentUser() {
   if (!access_token) return null;
 
   try {
-    const res = await fetch("https://delete-pin-worker.chi-map.workers.dev/me", {
+    const res = await fetch("https://environment.chi-map.workers.dev/me", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -175,7 +175,7 @@ function setupPost() {
     }
 
     try {
-      const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/post-pin", {
+      const response = await fetch("https://environment.chi-map.workers.dev/post-pin", {
         method: "POST",
         body: formData,
       });
@@ -245,7 +245,7 @@ function createMarker(pin) {
 
 // --- ピン読み込み + 削除対応（Public） ---
 async function loadPins() {
-  const response = await fetch("https://delete-pin-worker.chi-map.workers.dev/get-all-pins", {
+  const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
     headers: { "Content-Type": "application/json" },
   });
 
@@ -351,7 +351,7 @@ function renderPins(pins) {
 
 // --- SSEリアルタイム受信 ---
 function startRealtimeListener() {
-  const eventSource = new EventSource("https://delete-pin-worker.chi-map.workers.dev/realtime");
+  const eventSource = new EventSource("https://environment.chi-map.workers.dev/realtime");
 
   eventSource.onmessage = (event) => {
     const pin = JSON.parse(event.data);
