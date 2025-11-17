@@ -9,12 +9,13 @@ let supabase = null;
 let access_token = null;
 let refresh_token = null;
 let user = null;
+
+let filterBtn = document.getElementById("nav-list");
+let filterDrawer = document.getElementById("filterDrawer");
+let closeFilterDrawer = document.getElementById("closeFilterDrawer");
+let applyFilterBtn = document.getElementById("applyFilterBtn");
 let currentFilterCategories = [];
 
-const filterBtn = document.getElementById("nav-list");
-const filterDrawer = document.getElementById("filterDrawer");
-const closeFilterDrawer = document.getElementById("closeFilterDrawer");
-const applyFilterBtn = document.getElementById("applyFilterBtn");
 
 async function initSupabase() {
   // Supabaseライブラリをグローバルから参照
@@ -331,7 +332,6 @@ function getTokens() {
   refresh_token = localStorage.getItem("refresh_token");
 }
 
-
 // 開く
 filterBtn.addEventListener("click", () => {
   filterDrawer.classList.add("open");
@@ -345,20 +345,27 @@ closeFilterDrawer.addEventListener("click", () => {
 });
 
 async function loadPinsFiltered(selectedCategories) {
-  let query = supabase.from('pin_table').select(`*, categories!inner(name)`);
+  try {
+    const res = await fetch("https://environment.chi-map.workers.dev/filter-pins", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        categories: selectedCategories
+      })
+    });
 
-  if (selectedCategories.length > 0) {
-    query = query.in('category_id', selectedCategories);
+    const pins = await res.json();
+
+    if (!res.ok) {
+      console.error("フィルタAPIエラー:", pins.error);
+      return;
+    }
+
+    renderPins(pins);
+
+  } catch (err) {
+    console.error("フィルタ通信エラー:", err);
   }
-
-  const { data: pins, error } = await query;
-
-  if (error) {
-    console.error('フィルターピン取得エラー:', error);
-    return;
-  }
-
-  renderPins(pins);
 }
 
 applyFilterBtn.addEventListener("click", async () => {
@@ -373,57 +380,57 @@ applyFilterBtn.addEventListener("click", async () => {
   document.body.style.overflow = "";
 });
 
-  // 既存マーカー削除
-  markers.forEach(m => m.setMap(null));
-  markers = [];
+// 既存マーカー削除
+markers.forEach(m => m.setMap(null));
+markers = [];
 
-  // 新規マーカー
-  pins.forEach(pin => createMarker(pin));
+// 新規マーカー
+pins.forEach(pin => createMarker(pin));
 
-  // 既存クラスタ削除
-  if (markerCluster) {
-    markerCluster.clearMarkers();
-  }
+// 既存クラスタ削除
+if (markerCluster) {
+  markerCluster.clearMarkers();
+}
 
-  // InfoWindow 生成
-  if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
+// InfoWindow 生成
+if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
 
-  // 新クラスタ生成
-  markerCluster = new markerClusterer.MarkerClusterer({
-    map,
-    markers,
-    algorithm: new markerClusterer.SuperClusterAlgorithm({ radius: 80 }),
-    renderer: {
-      render: ({ count, position, markers }) => {
-        const categoryCount = {};
-        markers.forEach(m => {
-          const cat = m.pinData?.categories?.name || "不明";
-          categoryCount[cat] = (categoryCount[cat] || 0) + 1;
-        });
-        const categorySummary = Object.entries(categoryCount)
-          .map(([cat, num]) => `${cat}: ${num}`)
-          .join(", ");
+// 新クラスタ生成
+markerCluster = new markerClusterer.MarkerClusterer({
+  map,
+  markers,
+  algorithm: new markerClusterer.SuperClusterAlgorithm({ radius: 80 }),
+  renderer: {
+    render: ({ count, position, markers }) => {
+      const categoryCount = {};
+      markers.forEach(m => {
+        const cat = m.pinData?.categories?.name || "不明";
+        categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+      });
+      const categorySummary = Object.entries(categoryCount)
+        .map(([cat, num]) => `${cat}: ${num}`)
+        .join(", ");
 
-        return new google.maps.Marker({
-          position,
-          label: { text: String(count), color: "white", fontSize: "14px" },
-          title: `クラスタ内カテゴリ → ${categorySummary}`,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#4285F4",
-            fillOpacity: 0.6,
-            strokeWeight: 0,
-            scale: Math.max(20, Math.log(count) * 8),
-          },
-        });
-      },
+      return new google.maps.Marker({
+        position,
+        label: { text: String(count), color: "white", fontSize: "14px" },
+        title: `クラスタ内カテゴリ → ${categorySummary}`,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: "#4285F4",
+          fillOpacity: 0.6,
+          strokeWeight: 0,
+          scale: Math.max(20, Math.log(count) * 8),
+        },
+      });
     },
-  });
+  },
+});
 
-  // ズーム抑止
-  markerCluster.addListener("click", (event) => {
-    event.stop && event.stop();
-  });
+// ズーム抑止
+markerCluster.addListener("click", (event) => {
+  event.stop && event.stop();
+});
 function renderPins(pins) {
   // 既存マーカー削除
   markers.forEach(m => m.setMap(null));

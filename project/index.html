@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ちーまっぷ</title>
   <link rel="stylesheet" href="css/style.css">
 
 </head>
+
 <body>
 
   <!-- ヘッダー -->
@@ -23,20 +25,38 @@
     <button id="nav-map" class="active"> マップ</button>
     <button id="nav-login"> 一覧</button>
     <button id="nav-list"> フィルタ</button>
+    <!-- フィルター ドロワー -->
+    <div id="filterDrawer" class="filter-drawer">
+      <div class="filter-header">
+        <h3>フィルター</h3>
+        <button id="closeFilterDrawer">✕</button>
+      </div>
+      <div class="filter-body">
+        <label><input type="checkbox" class="filter-checkbox" value="1"> 交通</label><br>
+        <label><input type="checkbox" class="filter-checkbox" value="2"> 不審者情報</label><br>
+        <label><input type="checkbox" class="filter-checkbox" value="3"> 洪水</label><br>
+        <label><input type="checkbox" class="filter-checkbox" value="4"> 危険物</label><br>
+        <label><input type="checkbox" class="filter-checkbox" value="5"> その他</label><br>
+      </div>
+      <div class="filter-footer">
+        <button id="applyFilterBtn">適用</button>
+      </div>
+    </div>
   </nav>
 
   <!-- モーダル読み込み領域 -->
-<div id="modal-container"></div>
+  <div id="modal-container"></div>
 
-<!-- Supabase CDN -->
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!--  あなたのJS -->
-<script defer src="js/1106demo.js"></script>
+  <!--  あなたのJS -->
+  <script defer src="js/1106demo.js"></script>
 
-<!-- Google Maps API (最後に読み込む) -->
-<script defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-skBRSV7M93zmrENqYtRAExZ5ix-kVrw&callback=initMap">
-</script>
+  <!-- Google Maps API (最後に読み込む) -->
+  <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-skBRSV7M93zmrENqYtRAExZ5ix-kVrw&callback=initMap">
+    </script>
 </body>
+
 </html>
