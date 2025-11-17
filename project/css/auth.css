@@ -1,29 +1,152 @@
+    /* ===== ベース設定 ===== */
     body {
-        font-family: sans-serif;
-        padding: 2em;
-        max-width: 400px;
-        margin: auto;
-        text-align: center;
-    }
-
-    form {
+        margin: 0;
+        font-family: "Noto Sans JP", "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
         display: flex;
         flex-direction: column;
-        gap: 1em;
-        margin-top: 1.5em;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 1.5em;
     }
 
-    input,
-    button {
-        padding: 0.6em;
+    h1 {
+        color: #1565c0;
+        font-size: 2.1em;
+        margin-bottom: 1.2em;
+        letter-spacing: 1px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    h3 {
+        color: #2e7d32;
+        margin-bottom: 0.3em;
+        font-weight: 500;
+    }
+
+    /* ===== フォームデザイン ===== */
+    form {
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 2.2em;
+        width: 90%;
+        max-width: 380px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1em;
+        transition: box-shadow 0.3s ease;
+    }
+
+    form:hover {
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    input {
+        padding: 0.9em;
+        border: 1.6px solid #cfd8dc;
+        border-radius: 10px;
         font-size: 1em;
+        outline: none;
+        transition: 0.2s;
+        background: #f9f9f9;
     }
 
-    #show-signup-btn {
-        margin-top: 1.5em;
+    input:focus {
+        border-color: #1e88e5;
+        background: #fff;
+        box-shadow: 0 0 6px rgba(30, 136, 229, 0.3);
     }
 
-    #signup-form {
+    /* ===== ボタン ===== */
+    button {
+        padding: 0.9em;
+        font-size: 1em;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: linear-gradient(135deg, #1e88e5, #43a047);
+        color: white;
+        letter-spacing: 0.5px;
+        transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    button:hover {
+        background: linear-gradient(135deg, #1976d2, #388e3c);
+        box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
+    }
+
+    #show-signup-btn,
+    #map {
+        background: linear-gradient(135deg, #43a047, #1e88e5);
+        margin-top: 1em;
+    }
+
+    #map {
+        font-size: 0.95em;
+        border: 2px solid transparent;
+    }
+
+    #map:hover {
+        border-color: rgba(30, 136, 229, 0.3);
+    }
+
+    /* ===== リンク ===== */
+    #forgot-link {
+        margin-top: 1em;
+    }
+
+    #forgot-link a {
+        color: #1e88e5;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9em;
+    }
+
+    #forgot-link a:hover {
+        text-decoration: underline;
+    }
+
+    /* ===== 戻るボタン ===== */
+    #back-to-login-btn,
+    #back-to-login {
+        background: #e0f2f1;
+        color: #2e7d32;
+        font-weight: normal;
+    }
+
+    #back-to-login-btn:hover,
+    #back-to-login:hover {
+        background: #c8e6c9;
+    }
+
+    /* ===== 非表示フォーム ===== */
+    #signup-form,
+    #forgot-form {
         display: none;
-        /* 初期状態では非表示 */
+    }
+
+    /* ===== メッセージ ===== */
+    #signup-message {
+        margin-top: 1em;
+        color: #2e7d32;
+        font-weight: bold;
+    }
+
+    /* ===== スマホ対応 ===== */
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 1.7em;
+        }
+
+        form {
+            padding: 1.8em;
+        }
+
+        button {
+            font-size: 0.95em;
+        }
     }
