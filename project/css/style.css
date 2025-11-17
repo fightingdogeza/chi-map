@@ -175,3 +175,137 @@ html, body {
     padding: 10px 0;
   }
 }
+/* =======================
+   フィルタードロワー全体
+======================= */
+.filter-drawer {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100%;
+  background: linear-gradient(135deg, #e3f2fd, #e8f5e9); /* dashboard風青→緑グラデ */
+  box-shadow: -4px 0 15px rgba(0,0,0,0.15);
+  z-index: 2500;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  border-left: 1px solid rgba(0,0,0,0.05);
+  border-radius: 8px 0 0 8px;
+  color: #2f3e46;
+  font-family: "Noto Sans JP", "Segoe UI", sans-serif;
+}
+
+/* ドロワー開閉 */
+.filter-drawer.open {
+  right: 0;
+}
+
+/* =======================
+   ヘッダー
+======================= */
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 10px;
+  border-bottom: 1.5px solid rgba(0,0,0,0.1);
+  font-weight: 600;
+  font-size: 18px;
+  color: #1565c0;
+}
+
+/* 閉じるボタン */
+#closeFilterDrawer {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #1565c0;
+  transition: color 0.2s ease;
+}
+
+#closeFilterDrawer:hover {
+  color: #1e88e5;
+}
+
+/* =======================
+   フィルター項目
+======================= */
+.filter-body {
+  padding: 15px 10px;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.filter-item input[type="checkbox"] {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  accent-color: #43a047; /* 緑系アクセント */
+}
+
+.filter-item label {
+  font-size: 16px;
+  color: #2f3e46;
+}
+
+/* =======================
+   適用ボタン
+======================= */
+.filter-footer {
+  text-align: center;
+  padding: 15px 10px;
+}
+
+#applyFilterBtn {
+  width: 100%;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #1e88e5, #43a047); /* dashboardボタン風グラデ */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#applyFilterBtn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 3px 10px rgba(30,136,229,0.25);
+}
+
+/* =======================
+   スクロールバー
+======================= */
+.filter-drawer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-drawer::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.15);
+  border-radius: 3px;
+}
+
+/* =======================
+   スマホ対応
+======================= */
+@media (max-width: 480px) {
+  .filter-drawer {
+    width: 240px;
+  }
+
+  .filter-header {
+    font-size: 16px;
+  }
+
+  #applyFilterBtn {
+    font-size: 15px;
+    padding: 10px 0;
+  }
+}
+
