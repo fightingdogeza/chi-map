@@ -465,24 +465,46 @@ async function updateNavMenu() {
 window.addEventListener("DOMContentLoaded", () => {
   const drawer = document.getElementById("filterDrawer");
 
+  // Drawer 開閉フラグ
+  let isFilterOpen = false;
+
+  // 閉じるボタン
   document.getElementById("closeFilterDrawer").addEventListener("click", () => {
     drawer.style.right = "-300px";
+    isFilterOpen = false;
   });
 
-  //フィルタボタンを nav-list に変更
+  // Drawer を開くボタン（nav-list）
   const openBtn = document.getElementById("nav-list");
-  openBtn.addEventListener("click", () => {
+  openBtn.addEventListener("click", (e) => {
+    e.stopPropagation();  // ← 外側クリック扱いにしない
     drawer.style.right = "0";
+    isFilterOpen = true;
   });
 
+  // Apply ボタン
   document.getElementById("applyFilterBtn").addEventListener("click", () => {
     const checks = document.querySelectorAll(".filter-checkbox:checked");
     activeFilters = Array.from(checks).map(c => Number(c.value));
     drawer.style.right = "-300px";
-    loadPins(); //フィルタ後にピン再読込
+    isFilterOpen = false;
+    loadPins();
+  });
+
+  // Drawer 内のクリックは外に伝播しない
+  drawer.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
+  // 画面全体クリック（フィルタ開いている時だけ閉じる）
+  document.addEventListener("click", async (e) => {
+    if (isFilterOpen) {
+      drawer.style.right = "-300px";
+      isFilterOpen = false;
+      return;  // ← 投稿フォームは絶対開かせない
+    }
   });
 });
-
 
 function getTokens() {
   access_token = localStorage.getItem("access_token");
