@@ -1,5 +1,4 @@
 let supabase = null;
-
 async function initSupabase() {
   // Supabaseライブラリをグローバルから参照
   if (typeof window.supabase === 'undefined') {
@@ -15,7 +14,6 @@ async function initSupabase() {
   }
 
   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-  console.log("Supabase initialized:", supabaseUrl);
   return supabase;
 }
 
@@ -26,7 +24,7 @@ const loginForm = document.getElementById("login-form");
 const backToLoginBtn = document.getElementById("back-to-login-btn");
 const mapToBtn = document.getElementById("map");
 const backToLogin = document.getElementById("back-to-login");
-
+const btns = document.querySelectorAll("button");
 //フォーム切替
 showSignupBtn.addEventListener("click", () => {
   loginForm.style.display = "none";
@@ -45,8 +43,9 @@ backToLoginBtn.addEventListener("click", () => {
 //新規登録
 signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const button = e.target.querySelector("button");
-  button.disabled = true;
+  btns.forEach(btn => {
+    btn.disabled = true;
+  });
 
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
@@ -74,13 +73,18 @@ signupForm.addEventListener("submit", async (e) => {
   } catch (err) {
     alert("エラー: " + err.message);
   } finally {
-    button.disabled = false;
+    btns.forEach(btn => {
+      btn.disabled = false;
+    });
   }
 });
 
 //ログイン
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  btns.forEach(btn => {
+    btn.disabled = true;
+  });
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
   try {
@@ -102,6 +106,10 @@ loginForm.addEventListener("submit", async (e) => {
     window.location.href = "https://chi-map.pages.dev/dashboard"; // ログイン後に移動
   } catch (err) {
     alert("ログインエラー: " + err.message);
+  } finally {
+    btns.forEach(btn => {
+      btn.disabled = false;
+    });
   }
 });
 

@@ -13,44 +13,6 @@ let activeFilters = [];
 let markerCluster = null;
 
 
-async function deletePin(pin, marker) {
-  const user = await getCurrentUser();
-  if (!user) {
-    alert("ログインしてください");
-    window.location.href = "https://chi-map.pages.dev/auth";
-    return;
-  }
-  const access_token = localStorage.getItem("access_token");
-  const refresh_token = localStorage.getItem("refresh_token");
-  try {
-    const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: pin.id,
-        imagePath: pin.image_path,
-        access_token,
-        refresh_token,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      alert("削除しました");
-      marker.setMap(null);
-      document.getElementById(`pin-${pin.id}`)?.remove();
-      markers = markers.filter(m => m !== marker);
-    } else {
-      alert(result.error || "削除できませんでした");
-    }
-  } catch (err) {
-    console.error("削除エラー:", err);
-    alert("削除中にエラーが発生しました。");
-  }
-}
-
-
 //Supabase初期化
 async function initSupabase() {
   if (typeof window.supabase === "undefined") {
@@ -256,19 +218,41 @@ function createMarker(pin) {
 
   //クリックイベント
   marker.addListener("click", () => {
-    const categoryName = pin.categories?.name ?? "未分類";
-    const showDelete = user && user.id === pin.uid;
 
-    const content = `
-      <div>
-        <h3>${pin.title}</h3>
-        <p>${pin.description}</p>
-        <p><strong>カテゴリー:</strong> ${categoryName}</p>
-        <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
-        ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;">` : ""}<br>
-        <button class="delete-btn">削除</button>
-      </div>
-    `;
+    const pos = marker.getPosition();
+    const projection = map.getProjection();
+
+    // InfoWindow を画面中央より 120px 下にずらす
+    if (projection) {
+      const point = projection.fromLatLngToPoint(pos);
+      const scale = Math.pow(2, map.getZoom());
+      const pixelOffsetY = -150 / scale;  // ← 下へ 120px 分ズラす
+
+      const adjustedPoint = new google.maps.Point(
+        point.x,
+        point.y + pixelOffsetY
+      );
+
+      const adjustedLatLng = projection.fromPointToLatLng(adjustedPoint);
+      map.panTo(adjustedLatLng);
+    } else {
+      map.panTo(pos);
+    }
+
+  // InfoWindow の内容
+  const categoryName = pin.categories?.name ?? "未分類";
+  const showDelete = user && user.id === pin.uid;
+
+  const content = `
+    <div>
+      <h3>${pin.title}</h3>
+      <p>${pin.description}</p>
+      <p><strong>カテゴリー:</strong> ${categoryName}</p>
+      <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
+      ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;">` : ""}
+      ${showDelete ? `<br><button id="deleteBtn">削除</button>` : ""}
+    </div>
+  `;
 
     infoWindow.setContent(content);
     infoWindow.open(map, marker);
@@ -283,6 +267,42 @@ function createMarker(pin) {
   });
 
   markers.push(marker); // これがクラスタの基本
+}
+async function deletePin(pin, marker) {
+  const user = await getCurrentUser();
+  if (!user) {
+    alert("ログインしてください");
+    window.location.href = "https://chi-map.pages.dev/auth";
+    return;
+  }
+  const access_token = localStorage.getItem("access_token");
+  const refresh_token = localStorage.getItem("refresh_token");
+  try {
+    const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: pin.id,
+        imagePath: pin.image_path,
+        access_token,
+        refresh_token,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert("削除しました");
+      marker.setMap(null);
+      document.getElementById(`pin-${pin.id}`)?.remove();
+      markers = markers.filter(m => m !== marker);
+    } else {
+      alert(result.error || "削除できませんでした");
+    }
+  } catch (err) {
+    console.error("削除エラー:", err);
+    alert("削除中にエラーが発生しました。");
+  }
 }
 
 
