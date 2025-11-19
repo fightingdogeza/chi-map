@@ -82,7 +82,7 @@ window.initMap = function () {
   const paramLat = parseFloat(params.get("lat"));
   const paramLng = parseFloat(params.get("lng"));
 
-  const initialLatLng = { lat: 35.6811673, lng: 139.7670516 };
+  let initialLatLng = { lat: 35.6811673, lng: 139.7670516 };
   if (from === "dashboard" && !isNaN(paramLat) && !isNaN(paramLng)) {
     initialLatLng = { lat: paramLat, lng: paramLng };
   }
