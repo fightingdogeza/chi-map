@@ -246,11 +246,11 @@ function createMarker(pin) {
       map.panTo(pos);
     }
 
-  // InfoWindow の内容
-  const categoryName = pin.categories?.name ?? "未分類";
-  const showDelete = user && user.id === pin.uid;
+    // InfoWindow の内容
+    const categoryName = pin.categories?.name ?? "未分類";
+    const showDelete = user && user.id === pin.uid;
 
-  const content = `
+    const content = `
     <div>
       <h3>${pin.title}</h3>
       <p>${pin.description}</p>
@@ -353,7 +353,7 @@ function renderPins(pins) {
   if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
 
   //新クラスタ生成
-markerCluster = new markerClusterer.MarkerClusterer({
+  markerCluster = new markerClusterer.MarkerClusterer({
     map,
     markers,
     algorithm: new markerClusterer.SuperClusterAlgorithm({ radius: 80 }),
@@ -464,7 +464,37 @@ async function updateNavMenu() {
 
 window.addEventListener("DOMContentLoaded", () => {
   const drawer = document.getElementById("filterDrawer");
+  const overlay = document.getElementById("filterOverlay");
 
+  // Drawer を開く
+  const openBtn = document.getElementById("nav-list");
+  openBtn.addEventListener("click", () => {
+    drawer.style.right = "0";
+    overlay.style.display = "block";  // ← 透明オーバーレイ ON
+  });
+
+  // Drawer を閉じる共通関数
+  function closeFilterDrawer() {
+    drawer.style.right = "-300px";
+    overlay.style.display = "none";   // ← 透明オーバーレイ OFF
+  }
+
+  document.getElementById("closeFilterDrawer")
+    .addEventListener("click", closeFilterDrawer);
+
+  // フィルタ適用ボタン
+  document.getElementById("applyFilterBtn")
+    .addEventListener("click", () => {
+      const checks = document.querySelectorAll(".filter-checkbox:checked");
+      activeFilters = Array.from(checks).map(c => Number(c.value));
+      closeFilterDrawer();
+      loadPins();
+    });
+
+  // ← オーバーレイをクリックしたら Drawer を閉じる
+  overlay.addEventListener("click", () => {
+    closeFilterDrawer();
+  });
   // Drawer 開閉フラグ
   let isFilterOpen = false;
 
@@ -472,37 +502,6 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("closeFilterDrawer").addEventListener("click", () => {
     drawer.style.right = "-300px";
     isFilterOpen = false;
-  });
-
-  // Drawer を開くボタン（nav-list）
-  const openBtn = document.getElementById("nav-list");
-  openBtn.addEventListener("click", (e) => {
-    e.stopPropagation();  // ← 外側クリック扱いにしない
-    drawer.style.right = "0";
-    isFilterOpen = true;
-  });
-
-  // Apply ボタン
-  document.getElementById("applyFilterBtn").addEventListener("click", () => {
-    const checks = document.querySelectorAll(".filter-checkbox:checked");
-    activeFilters = Array.from(checks).map(c => Number(c.value));
-    drawer.style.right = "-300px";
-    isFilterOpen = false;
-    loadPins();
-  });
-
-  // Drawer 内のクリックは外に伝播しない
-  drawer.addEventListener("click", (e) => {
-    e.stopPropagation();
-  });
-
-  // 画面全体クリック（フィルタ開いている時だけ閉じる）
-  document.addEventListener("click", async (e) => {
-    if (isFilterOpen) {
-      drawer.style.right = "-300px";
-      isFilterOpen = false;
-      return;  // ← 投稿フォームは絶対開かせない
-    }
   });
 });
 
