@@ -12,11 +12,11 @@ let user = null;
 let activeFilters = [];
 let markerCluster = null;
 const categoryColors = {
-  1: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-  2: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-  3: "http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png",
-  4: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
-  5: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+  1: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+  2: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+  3: "https://maps.google.com/mapfiles/ms/icons/ltblue-dot.png",
+  4: "https://maps.google.com/mapfiles/ms/icons/orange-dot.png",
+  5: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
 };
 
 //Supabase初期化
