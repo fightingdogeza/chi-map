@@ -13,7 +13,7 @@ let activeFilters = [];
 let markerCluster = null;
 
 
-async function deletePin(pin) {
+async function deletePin(pin, marker) {
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインしてください");
@@ -38,7 +38,9 @@ async function deletePin(pin) {
 
     if (result.success) {
       alert("削除しました");
+      marker.setMap(null);
       document.getElementById(`pin-${pin.id}`)?.remove();
+      markers = markers.filter(m => m !== marker);
     } else {
       alert(result.error || "削除できませんでした");
     }
