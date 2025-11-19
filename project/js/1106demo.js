@@ -347,7 +347,7 @@ function renderPins(pins) {
   if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
 
   //新クラスタ生成
-  markerCluster = new markerClusterer.MarkerClusterer({
+markerCluster = new markerClusterer.MarkerClusterer({
     map,
     markers,
     algorithm: new markerClusterer.SuperClusterAlgorithm({ radius: 80 }),
@@ -383,7 +383,6 @@ function renderPins(pins) {
       },
     },
   });
-
   //クラスタクリック時のズーム抑止
   markerCluster.addListener("click", (event) => {
     event.stop && event.stop();
