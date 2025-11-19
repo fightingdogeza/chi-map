@@ -98,12 +98,13 @@ loginForm.addEventListener("submit", async (e) => {
     if (data.access_token && data.refresh_token) {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
-      window.location.href = "https://chi-map.pages.dev/dashboard";
+      // window.location.href = "https://chi-map.pages.dev/dashboard";
     } else {
       alert("ログインエラー: " + data.message);
       throw new Error(data.error || "ログインに失敗しました");
     }
-    window.location.href = "https://chi-map.pages.dev/dashboard"; // ログイン後に移動
+    console.log(data.access_token);
+    // window.location.href = "https://chi-map.pages.dev/dashboard"; // ログイン後に移動
   } catch (err) {
     alert("ログインエラー: " + err.message);
   } finally {
