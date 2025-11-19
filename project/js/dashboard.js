@@ -1,4 +1,3 @@
-// ================== Supabase 初期化 ==================
 let supabase = null;
 
 async function initSupabase() {
@@ -9,7 +8,6 @@ async function initSupabase() {
   }
 
   try {
-    // WorkerからSupabase設定を取得
     const res = await fetch("https://environment.chi-map.workers.dev/init-supabase");
     const { supabaseUrl, supabaseAnonKey } = await res.json();
 
@@ -27,7 +25,7 @@ async function initSupabase() {
   }
 }
 
-// ------------------ 現在のログインユーザー取得 ------------------
+//現在のログインユーザー取得
 async function getCurrentUser() {
   const token = localStorage.getItem("access_token");
   if (!token) {
@@ -53,7 +51,7 @@ async function getCurrentUser() {
   }
 }
 
-// ------------------ 初期化 ------------------
+//初期化
 async function init() {
   await initSupabase();
   if (!supabase) return;
@@ -72,7 +70,7 @@ async function init() {
   }
 }
 
-// ------------------ 投稿削除（Worker経由） ------------------
+//投稿削除
 async function deletePin(pin) {
   const user = await getCurrentUser();
   if (!user) {
@@ -109,7 +107,7 @@ async function deletePin(pin) {
   }
 }
 
-// ------------------ 管理者用 全投稿取得 ------------------
+//管理者用 全投稿取得
 async function loadAllPinsForAdmin() {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
@@ -122,7 +120,7 @@ async function loadAllPinsForAdmin() {
   }
 }
 
-// ------------------ 自分の投稿を取得 ------------------
+//自分の投稿を取得
 async function loadDashboardPins(userId) {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-user-pins", {
@@ -137,7 +135,7 @@ async function loadDashboardPins(userId) {
   }
 }
 
-// ------------------ 投稿カード描画 ------------------
+//投稿カード描画
 function renderPins(pins) {
   const container = document.getElementById("content");
   container.innerHTML = "";
@@ -160,8 +158,8 @@ function renderPins(pins) {
       <p>${pin.description}</p>
       <p><strong>カテゴリー:</strong> ${categoryName}</p>
       <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
-      ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;" />` : ""}
-      <br><button class="delete-btn">削除</button>
+      ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;" />` : ""}<br>
+      <button class="delete-btn">削除</button>
     `;
 
     card.querySelector(".delete-btn").addEventListener("click", () => deletePin(pin));
@@ -169,7 +167,7 @@ function renderPins(pins) {
   });
 }
 
-// ------------------ イベント ------------------
+//イベント
 
 // 地図に戻る
 document.getElementById("map").addEventListener("click", () => {
@@ -193,5 +191,5 @@ document.getElementById("logout").addEventListener("click", async () => {
   window.location.href = "https://chi-map.pages.dev/auth";
 });
 
-// ------------------ 初期化呼び出し ------------------
+//初期化呼び出し
 init();

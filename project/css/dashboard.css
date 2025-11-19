@@ -1,6 +1,4 @@
-/* =======================
-   ベース設定
-======================= */
+/*ベース設定*/
 body {
   font-family: "Noto Sans JP", "Segoe UI", sans-serif;
   background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
@@ -13,9 +11,7 @@ body {
   color: #2f3e46;
 }
 
-/* =======================
-   コンテナ
-======================= */
+/*コンテナ*/
 .dashboard-container {
   background-color: #ffffff;
   border-radius: 18px;
@@ -29,9 +25,7 @@ body {
   min-height: 480px;
 }
 
-/* =======================
-   ヘッダー
-======================= */
+/*ヘッダー*/
 .dashboard-header h1 {
   text-align: center;
   font-size: 1.7em;
@@ -41,9 +35,7 @@ body {
   font-weight: 600;
 }
 
-/* =======================
-   コンテンツエリア
-======================= */
+/*コンテンツエリア*/
 .content-box {
   background-color: #ffffff;
   border: 1.5px solid #cfd8dc;
@@ -59,18 +51,14 @@ body {
   box-shadow: 0 3px 10px rgba(30, 136, 229, 0.12);
 }
 
-/* =======================
-   フッター（ボタンエリア）
-======================= */
+/*フッター（ボタンエリア）*/
 .dashboard-footer {
   display: flex;
   justify-content: space-between;
   gap: 1em;
 }
 
-/* =======================
-   ボタンデザイン
-======================= */
+/*ボタンデザイン*/
 .btn {
   flex: 1;
   padding: 0.9em 1em;
@@ -84,7 +72,7 @@ body {
   transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* ログアウトボタン */
+/*ログアウトボタン*/
 .logout-btn {
   background: linear-gradient(135deg, #1e88e5, #43a047);
 }
@@ -94,7 +82,7 @@ body {
   box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
 }
 
-/* マップボタン */
+/*マップボタン*/
 .map-btn {
   background: linear-gradient(135deg, #43a047, #1e88e5);
 }
@@ -104,9 +92,7 @@ body {
   box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
 }
 
-/* =======================
-   スクロールバー
-======================= */
+/*スクロールバー*/
 .content-box::-webkit-scrollbar {
   width: 8px;
 }
@@ -115,9 +101,7 @@ body {
   border-radius: 4px;
 }
 
-/* =======================
-   スマホ対応
-======================= */
+/*スマホ対応*/
 @media (max-width: 480px) {
   .dashboard-container {
     padding: 1.6em;

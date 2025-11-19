@@ -1,4 +1,4 @@
-// --- グローバル変数 ---
+//グローバル変数
 let map;
 let tempMarker = null;
 let modalOpen = false;
@@ -49,7 +49,7 @@ async function deletePin(pin) {
 }
 
 
-// --- Supabase初期化 ---
+//Supabase初期化
 async function initSupabase() {
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
@@ -68,10 +68,10 @@ async function initSupabase() {
   return supabase;
 }
 
-// --- 下部メニュー ---
+//下部メニュー
 const navLoginBtn = document.getElementById("nav-login");
 
-// --- 現在のログインユーザー取得 ---
+//現在のログインユーザー取得
 async function getCurrentUser() {
   getTokens();
   if (!access_token) return null;
@@ -98,7 +98,6 @@ async function getCurrentUser() {
       localStorage.setItem("access_token", data.new_access_token);
       localStorage.setItem("refresh_token", data.new_refresh_token);
     }
-
     return data.user;
   } catch (err) {
     console.error("通信エラー:", err);
@@ -106,7 +105,7 @@ async function getCurrentUser() {
   }
 }
 
-// --- Google Map 初期化 ---
+//Google Map 初期化
 window.initMap = function () {
   const initialLatLng = { lat: 35.6811673, lng: 139.7670516 };
   map = new google.maps.Map(document.getElementById("map"), {
@@ -144,7 +143,7 @@ window.initMap = function () {
   }
 };
 
-// --- modal.html 読み込み ---
+//modal.html 読み込み
 function loadModal() {
   return fetch("modal.html")
     .then((res) => res.text())
@@ -171,7 +170,7 @@ function closeModal() {
   }
 }
 
-// --- 投稿フォーム ---
+//投稿フォーム
 function setupPost() {
   const form = document.getElementById("pinForm");
 
@@ -181,7 +180,6 @@ function setupPost() {
       alert("地図をクリックして位置を選択してください。");
       return;
     }
-
     const title = document.getElementById("title").value;
     const category_id = document.getElementById("category").value;
     const description = document.getElementById("description").value;
@@ -244,10 +242,10 @@ function createMarker(pin) {
     title: pin.title || "タイトルなし",
   });
 
-  // 🔹 pin情報をマーカーに持たせる（クラスタ内集計に必要）
+  // pin情報をマーカーに持たせる（クラスタ内集計に必要）
   marker.pinData = pin;
 
-  // --- クリックイベント ---
+  //クリックイベント
   marker.addListener("click", () => {
     const categoryName = pin.categories?.name ?? "未分類";
     const showDelete = user && user.id === pin.uid;
@@ -258,7 +256,8 @@ function createMarker(pin) {
         <p>${pin.description}</p>
         <p><strong>カテゴリー:</strong> ${categoryName}</p>
         <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
-        ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;">` : ""}
+        ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;">` : ""}<br>
+        <button class="delete-btn">削除</button>
       </div>
     `;
 
@@ -274,11 +273,11 @@ function createMarker(pin) {
     }
   });
 
-  markers.push(marker); // ← これがクラスタの基本
+  markers.push(marker); // これがクラスタの基本
 }
 
 
-// --- ピン読み込み + 削除対応（Public） ---
+//ピン読み込み
 async function loadPins() {
   const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
     headers: { "Content-Type": "application/json" },
@@ -294,31 +293,31 @@ async function loadPins() {
 
   user = await getCurrentUser();
 
-  // 🔹 フィルター適用
+  // フィルター適用
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
   }
 
-  // 🔹 ピン描画処理（クラスタリング）
+  // ピン描画処理（クラスタリング）
   renderPins(pins);
 }
 function renderPins(pins) {
-  // --- 古いマーカー削除 ---
+  //古いマーカー削除
   markers.forEach(m => m.setMap(null));
   markers = [];
 
-  // --- 新しいマーカー作成 ---
+  //新しいマーカー作成
   pins.forEach(pin => createMarker(pin));
 
-  // --- 既存クラスタ削除 ---
+  //既存クラスタ削除
   if (markerCluster) {
     markerCluster.clearMarkers();
   }
 
-  // --- InfoWindow 初期化 ---
+  //InfoWindow 初期化
   if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
 
-  // --- 新クラスタ生成 ---
+  //新クラスタ生成
   markerCluster = new markerClusterer.MarkerClusterer({
     map,
     markers,
@@ -356,7 +355,7 @@ function renderPins(pins) {
     },
   });
 
-  // --- クラスタクリック時のズーム抑止 ---
+  //クラスタクリック時のズーム抑止
   markerCluster.addListener("click", (event) => {
     event.stop && event.stop();
   });
@@ -384,13 +383,12 @@ function renderPins(pins) {
 
 
 
-// --- SSEリアルタイム受信 ---
+//SSEリアルタイム受信
 function startRealtimeListener() {
   const eventSource = new EventSource("https://environment.chi-map.workers.dev/realtime");
 
   eventSource.onmessage = (event) => {
     const pin = JSON.parse(event.data);
-    // 🔧 ここでも数値変換（重要）
     const lat = Number(pin.lat);
     const lng = Number(pin.lng);
     if (isNaN(lat) || isNaN(lng)) {
@@ -437,7 +435,7 @@ window.addEventListener("DOMContentLoaded", () => {
     drawer.style.right = "-300px";
   });
 
-  // ← フィルタボタンを nav-list に変更
+  //フィルタボタンを nav-list に変更
   const openBtn = document.getElementById("nav-list");
   openBtn.addEventListener("click", () => {
     drawer.style.right = "0";
@@ -447,7 +445,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const checks = document.querySelectorAll(".filter-checkbox:checked");
     activeFilters = Array.from(checks).map(c => Number(c.value));
     drawer.style.right = "-300px";
-    loadPins(); // ← フィルタ後にピン再読込
+    loadPins(); //フィルタ後にピン再読込
   });
 });
 

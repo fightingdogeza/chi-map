@@ -1,4 +1,4 @@
-    /* ===== ベース設定 ===== */
+    /*ベース設定*/
     body {
         margin: 0;
         font-family: "Noto Sans JP", "Segoe UI", sans-serif;
@@ -26,7 +26,7 @@
         font-weight: 500;
     }
 
-    /* ===== フォームデザイン ===== */
+    /*フォームデザイン*/
     form {
         background: #ffffff;
         border-radius: 18px;
@@ -60,7 +60,7 @@
         box-shadow: 0 0 6px rgba(30, 136, 229, 0.3);
     }
 
-    /* ===== ボタン ===== */
+    /*ボタン*/
     button {
         padding: 0.9em;
         font-size: 1em;
@@ -94,7 +94,7 @@
         border-color: rgba(30, 136, 229, 0.3);
     }
 
-    /* ===== リンク ===== */
+    /*リンク*/
     #forgot-link {
         margin-top: 1em;
     }
@@ -110,7 +110,7 @@
         text-decoration: underline;
     }
 
-    /* ===== 戻るボタン ===== */
+    /*戻るボタン*/
     #back-to-login-btn,
     #back-to-login {
         background: #e0f2f1;
@@ -123,20 +123,20 @@
         background: #c8e6c9;
     }
 
-    /* ===== 非表示フォーム ===== */
+    /*非表示フォーム*/
     #signup-form,
     #forgot-form {
         display: none;
     }
 
-    /* ===== メッセージ ===== */
+    /*メッセージ*/
     #signup-message {
         margin-top: 1em;
         color: #2e7d32;
         font-weight: bold;
     }
 
-    /* ===== スマホ対応 ===== */
+    /*スマホ対応*/
     @media (max-width: 480px) {
         h1 {
             font-size: 1.7em;

@@ -7,8 +7,6 @@ async function initSupabase() {
     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
     return;
   }
-
-  // Workerから環境変数を取得
   const res = await fetch('https://environment.chi-map.workers.dev/init-supabase');
   const { supabaseUrl, supabaseAnonKey } = await res.json();
 
@@ -16,13 +14,12 @@ async function initSupabase() {
     throw new Error("SupabaseのURLまたはキーが取得できません。");
   }
 
-  // Supabaseクライアント初期化
   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
   console.log("Supabase initialized:", supabaseUrl);
   return supabase;
 }
 
-// --- DOM要素取得 ---
+//DOM要素取得
 const showSignupBtn = document.getElementById("show-signup-btn");
 const signupForm = document.getElementById("signup-form");
 const loginForm = document.getElementById("login-form");
@@ -30,7 +27,7 @@ const backToLoginBtn = document.getElementById("back-to-login-btn");
 const mapToBtn = document.getElementById("map");
 const backToLogin = document.getElementById("back-to-login");
 
-// --- フォーム切替 ---
+//フォーム切替
 showSignupBtn.addEventListener("click", () => {
   loginForm.style.display = "none";
   showSignupBtn.style.display = "none";
@@ -45,7 +42,7 @@ backToLoginBtn.addEventListener("click", () => {
   showSignupBtn.style.display = "inline-block";
 });
 
-// ================== 新規登録（Workers経由） ==================
+//新規登録
 signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const button = e.target.querySelector("button");
@@ -81,7 +78,7 @@ signupForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ================== ログイン（Workers経由） ==================
+//ログイン
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("login-email").value;
@@ -109,7 +106,7 @@ loginForm.addEventListener("submit", async (e) => {
 });
 
 
-// --- 地図へ戻るボタン ---
+//地図へ戻るボタン
 mapToBtn.addEventListener("click", function () {
   window.location.href = "https://chi-map.pages.dev";
 });
@@ -137,8 +134,6 @@ function handleAuthRedirect() {
     localStorage.setItem("access_token", access_token);
     localStorage.setItem("refresh_token", refresh_token);
     localStorage.setItem("token_expiry", Date.now() + expires_in * 1000);
-
-    // ハッシュを消してURLをきれいにする
     history.replaceState(null, "", "/");
   }
 }
