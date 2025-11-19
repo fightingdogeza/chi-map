@@ -11,7 +11,13 @@ let refresh_token = null;
 let user = null;
 let activeFilters = [];
 let markerCluster = null;
-
+const categoryColors = {
+  1: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+  2: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+  3: "http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png",
+  4: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
+  5: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+};
 
 //Supabase初期化
 async function initSupabase() {
@@ -206,11 +212,12 @@ function createMarker(pin) {
   const lat = Number(pin.lat);
   const lng = Number(pin.lng);
   if (isNaN(lat) || isNaN(lng)) return;
-
+  const iconUrl = categoryColors[Number(pin.category_id)] || null;
   const marker = new google.maps.Marker({
     position: { lat, lng },
     map,
     title: pin.title || "タイトルなし",
+    icon: iconUrl,
   });
 
   // pin情報をマーカーに持たせる（クラスタ内集計に必要）
@@ -326,7 +333,6 @@ async function loadPins() {
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
   }
-
   // ピン描画処理（クラスタリング）
   renderPins(pins);
 }
