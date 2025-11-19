@@ -173,11 +173,13 @@ function closeModal() {
 //投稿フォーム
 function setupPost() {
   const form = document.getElementById("pinForm");
-
+  const btn = document.getElementById("submitBtn");
   form.addEventListener("submit", async (e) => {
+    btn.disabled = true;
     e.preventDefault();
     if (!selectedLatLng) {
       alert("地図をクリックして位置を選択してください。");
+      btn.disabled = false;
       return;
     }
     const title = document.getElementById("title").value;
@@ -187,12 +189,14 @@ function setupPost() {
 
     if (category_id === "none") {
       alert("カテゴリを選択してください");
+      btn.disabled = false;
       return;
     }
 
     user = await getCurrentUser();
     if (!user) {
       alert("ログインが切れています。再度ログインしてください。");
+      btn.disabled = false;
       window.location.href = "auth.html";
       return;
     }
@@ -217,15 +221,18 @@ function setupPost() {
 
       if (result.success) {
         alert("投稿が完了しました！");
+        btn.disabled = false;
         closeModal();
         await loadPins();
       } else {
         console.error("投稿エラー:", result.error);
         alert("投稿に失敗しました。");
+        btn.disabled = false;
       }
     } catch (err) {
       console.error("投稿例外:", err);
       alert("投稿に失敗しました。");
+      btn.disabled = false;
     }
   });
 }

@@ -72,6 +72,8 @@ async function init() {
 
 //投稿削除
 async function deletePin(pin) {
+  const btn = card.querySelector(".delete-btn");
+  btn.disabled = true;
   const user = await getCurrentUser();
   if (!user) {
     alert("ログインしてください");
@@ -98,12 +100,15 @@ async function deletePin(pin) {
     if (result.success) {
       alert("削除しました");
       document.getElementById(`pin-${pin.id}`)?.remove();
+      btn.disabled = false;
     } else {
       alert(result.error || "削除できませんでした");
+      btn.disabled = false;
     }
   } catch (err) {
     console.error("削除エラー:", err);
     alert("削除中にエラーが発生しました。");
+    btn.disabled = false;
   }
 }
 
@@ -162,7 +167,9 @@ function renderPins(pins) {
       <button class="delete-btn">削除</button>
     `;
 
-    card.querySelector(".delete-btn").addEventListener("click", () => deletePin(pin));
+    card.querySelector(".delete-btn").addEventListener("click", () => 
+      deletePin(pin)
+  );
     container.appendChild(card);
   });
 }
