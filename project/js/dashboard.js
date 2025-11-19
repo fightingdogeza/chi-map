@@ -1,4 +1,5 @@
 let supabase = null;
+const user = await getCurrentUser();
 
 async function initSupabase() {
   // Supabaseライブラリが読み込まれているか確認
@@ -55,8 +56,6 @@ async function getCurrentUser() {
 async function init() {
   await initSupabase();
   if (!supabase) return;
-
-  const user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
     window.location.href = "https://chi-map.pages.dev/auth";
@@ -72,7 +71,6 @@ async function init() {
 
 //投稿削除
 async function deletePin(pin) {
-  const user = await getCurrentUser();
   if (!user) {
     alert("ログインしてください");
     window.location.href = "https://chi-map.pages.dev/auth";
@@ -90,6 +88,7 @@ async function deletePin(pin) {
         imagePath: pin.image_path,
         access_token,
         refresh_token,
+        role:user.role,
       }),
     });
 
@@ -178,8 +177,6 @@ function renderPins(pins) {
     container.appendChild(card);
   });
 }
-
-//イベント
 
 // 地図に戻る
 document.getElementById("map").addEventListener("click", () => {
