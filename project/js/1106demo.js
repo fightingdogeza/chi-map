@@ -77,10 +77,18 @@ async function getCurrentUser() {
 
 //Google Map 初期化
 window.initMap = function () {
+  const params = new URLSearchParams(window.location.search);
+  const from = params.get("from");
+  const paramLat = parseFloat(params.get("lat"));
+  const paramLng = parseFloat(params.get("lng"));
+
   const initialLatLng = { lat: 35.6811673, lng: 139.7670516 };
+  if (from === "dashboard" && !isNaN(paramLat) && !isNaN(paramLng)) {
+    initialLatLng = { lat: paramLat, lng: paramLng };
+  }
   map = new google.maps.Map(document.getElementById("map"), {
     center: initialLatLng,
-    zoom: 15,
+    zoom: 17,
   });
 
   loadPins();
@@ -104,12 +112,13 @@ window.initMap = function () {
       openModal();
     }
   });
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => map.setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      (err) => console.warn("位置情報取得失敗:", err.message)
-    );
+  if (from !== "dashboard") {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => map.setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        (err) => console.warn("位置情報取得失敗:", err.message)
+      );
+    }
   }
 };
 

@@ -150,7 +150,8 @@ function renderPins(pins) {
     const card = document.createElement("div");
     card.id = `pin-${pin.id}`;
     card.className = "pin-card";
-
+    card.dataset.lat = pin.lat;
+    card.dataset.lng = pin.lng;
     const categoryName = pin.categories?.name ?? "未分類";
 
     card.innerHTML = `
@@ -159,12 +160,21 @@ function renderPins(pins) {
       <p><strong>カテゴリー:</strong> ${categoryName}</p>
       <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
       ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;" />` : ""}<br>
+      <button class="goto-map-btn">地図で見る</button>
       <button class="delete-btn">削除</button>
     `;
 
-    card.querySelector(".delete-btn").addEventListener("click", () => 
+    card.querySelector(".delete-btn").addEventListener("click", () =>
       deletePin(pin)
-  );
+    );
+    card.querySelector(".goto-map-btn")
+      .addEventListener("click", () => {
+        const lat = pin.lat;
+        const lng = pin.lng;
+
+        // トップページへパラメータ付きで移動
+        window.location.href = `https://chi-map.pages.dev?from=dashboard&lat=${lat}&lng=${lng}`;
+      });
     container.appendChild(card);
   });
 }
