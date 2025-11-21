@@ -327,10 +327,10 @@ async function loadPins() {
     headers: { "Content-Type": "application/json" },
   });
 
-  let text = await response.text();
   let pins;
   try {
-    pins = JSON.parse(text);
+    const res = await response.json();
+    pins = res.data; // ← ここで data 配列を取得
   } catch {
     return;
   }
