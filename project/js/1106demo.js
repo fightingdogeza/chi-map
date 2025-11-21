@@ -92,7 +92,6 @@ window.initMap = function () {
   });
 
   loadPins();
-  startRealtimeListener();
   updateNavMenu();
 
   map.addListener("click", async function (e) {
@@ -424,35 +423,6 @@ function renderPins(pins) {
   updateCluster();
 }
 
-
-
-//SSEリアルタイム受信
-function startRealtimeListener() {
-  const eventSource = new EventSource("https://environment.chi-map.workers.dev/realtime");
-
-  eventSource.onmessage = (event) => {
-    const pin = JSON.parse(event.data);
-    const lat = Number(pin.lat);
-    const lng = Number(pin.lng);
-    if (isNaN(lat) || isNaN(lng)) {
-      console.warn("リアルタイムピンの座標が不正:", pin);
-      return;
-    }
-
-    new google.maps.Marker({
-      position: { lat, lng },
-      map: map,
-      icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-      title: pin.title,
-    });
-  };
-
-  eventSource.onerror = (err) => {
-    console.error("SSEエラー:", err);
-    eventSource.close();
-  };
-}
-
 // --- ナビメニュー更新 ---
 async function updateNavMenu() {
   try {
@@ -475,17 +445,15 @@ window.addEventListener("DOMContentLoaded", () => {
   const drawer = document.getElementById("filterDrawer");
   const overlay = document.getElementById("filterOverlay");
 
-  // Drawer を開く
   const openBtn = document.getElementById("nav-list");
   openBtn.addEventListener("click", () => {
     drawer.style.right = "0";
-    overlay.style.display = "block";  // ← 透明オーバーレイ ON
+    overlay.style.display = "block";
   });
 
-  // Drawer を閉じる共通関数
   function closeFilterDrawer() {
     drawer.style.right = "-300px";
-    overlay.style.display = "none";   // ← 透明オーバーレイ OFF
+    overlay.style.display = "none";
   }
 
   document.getElementById("closeFilterDrawer")
@@ -500,14 +468,11 @@ window.addEventListener("DOMContentLoaded", () => {
       loadPins();
     });
 
-  // ← オーバーレイをクリックしたら Drawer を閉じる
   overlay.addEventListener("click", () => {
     closeFilterDrawer();
   });
-  // Drawer 開閉フラグ
   let isFilterOpen = false;
 
-  // 閉じるボタン
   document.getElementById("closeFilterDrawer").addEventListener("click", () => {
     drawer.style.right = "-300px";
     isFilterOpen = false;
