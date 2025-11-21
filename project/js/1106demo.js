@@ -349,6 +349,7 @@ function renderPins(pins) {
   markers.forEach(m => m.setMap(null));
   markers = [];
 
+  console.log(pins);
   //新しいマーカー作成
   pins.forEach(pin => createMarker(pin));
 
