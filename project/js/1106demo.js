@@ -255,7 +255,10 @@ function createMarker(pin) {
     }
 
     // InfoWindow の内容
-    const categoryName = pin.categories?.name ?? "未分類";
+    let categoryName = pin.categories?.name ?? "未分類";
+    if(pin.category_id === 1){
+      categoryname = "交通";
+    };
     const showDelete = user && user.id === pin.uid;
 
     const content = `
@@ -330,7 +333,7 @@ async function loadPins() {
   let pins;
   try {
     const res = await response.json();
-    pins = res; // ← ここで data 配列を取得
+    pins = res;
   } catch {
     return;
   }
