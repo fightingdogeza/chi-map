@@ -330,7 +330,7 @@ async function loadPins() {
   let pins;
   try {
     const res = await response.json();
-    pins = res.data; // ← ここで data 配列を取得
+    pins = res; // ← ここで data 配列を取得
   } catch {
     return;
   }
