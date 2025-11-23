@@ -253,12 +253,8 @@ function createMarker(pin) {
     } else {
       map.panTo(pos);
     }
-
-    // InfoWindow の内容
     let categoryName = pin.categories?.name ?? "未分類";
-    if(pin.category_id === 1){
-      categoryname = "交通";
-    };
+
     const showDelete = user && user.id === pin.uid;
 
     const content = `
@@ -331,7 +327,6 @@ async function loadPins() {
   });
   try {
     const res = await response.json();
-    console.log(res.data);
     pins = res.data;
   } catch {
     return;
