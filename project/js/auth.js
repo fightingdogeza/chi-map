@@ -133,13 +133,13 @@ function handleAuthRedirect() {
   const params = new URLSearchParams(hash.substring(1));
 
   const access_token = params.get("access_token");
-  // const refresh_token = params.get("refresh_token");
-  // const expires_in = params.get("expires_in");
+  const refresh_token = params.get("refresh_token");
+  const expires_in = params.get("expires_in");
 
-  if (access_token) {
+  if (access_token && refresh_token) {
     localStorage.setItem("access_token", access_token);
-    // localStorage.setItem("refresh_token", refresh_token);
-    // localStorage.setItem("token_expiry", Date.now() + expires_in * 1000);
+    localStorage.setItem("refresh_token", refresh_token);
+    localStorage.setItem("token_expiry", Date.now() + expires_in * 1000);
     history.replaceState(null, "", "/");
   }
 }
