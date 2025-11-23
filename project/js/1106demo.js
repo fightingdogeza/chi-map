@@ -339,7 +339,6 @@ async function loadPins() {
     // 必ず配列をセットする
   pins = Array.isArray(res.data) ? res.data : [];
 
-  console.log("受け取った pins:", pins);
   // フィルター適用
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
