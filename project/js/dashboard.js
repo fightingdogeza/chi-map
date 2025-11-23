@@ -55,7 +55,7 @@ async function init() {
   await initSupabase();
   if (!supabase) return;
 
-   user = await getCurrentUser();
+  user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
     window.location.href = "https://chi-map.pages.dev/auth";
@@ -82,9 +82,10 @@ async function deletePin(pin) {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
       method: "POST",
-      headers: { "Content-Type": "application/json",
-            "Authorization": `Bearer ${access_token}`, 
-       },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${access_token}`,
+      },
       body: JSON.stringify({
         id: pin.id,
         imagePath: pin.image_path,
@@ -109,7 +110,9 @@ async function deletePin(pin) {
 async function loadAllPinsForAdmin() {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
-      headers: { "x-user-role": "admin" },
+      headers: {
+        "Authorization": `Bearer ${access_token}`,
+      },
     });
     res = await response.json();
   } catch (err) {
@@ -124,7 +127,10 @@ async function loadDashboardPins(userId) {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-user-pins", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${access_token}`,
+      },
       body: JSON.stringify({ userId }),
     });
     res = await response.json();
