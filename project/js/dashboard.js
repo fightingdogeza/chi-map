@@ -19,7 +19,6 @@ async function initSupabase() {
 
     // Supabaseクライアント初期化
     supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-    console.log(" Supabase initialized:", supabaseUrl);
     return supabase;
   } catch (err) {
     console.error(" Supabase初期化エラー:", err);
