@@ -349,7 +349,9 @@ function renderPins(pins) {
   markers = [];
 
   //新しいマーカー作成
-  pins.forEach(pin => createMarker(pin));
+  pins.forEach(pin => {
+    console.log(pin);
+    createMarker(pin)});
 
   //既存クラスタ削除
   if (markerCluster) {
