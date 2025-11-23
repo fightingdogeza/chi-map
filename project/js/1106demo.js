@@ -11,6 +11,7 @@ let refresh_token = null;
 let user = null;
 let activeFilters = [];
 let markerCluster = null;
+let pins = [];
 const categoryColors = {
   1: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
   2: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
@@ -77,9 +78,14 @@ async function getCurrentUser() {
 //Google Map 初期化
 window.initMap = function () {
   const params = new URLSearchParams(window.location.search);
-  const from = params.get("from");
-  const paramLat = parseFloat(params.get("lat"));
-  const paramLng = parseFloat(params.get("lng"));
+  let from;
+  let paramLat;
+  let paramLng;
+  if(params){
+  from = params.get("from");
+  paramLat = parseFloat(params.get("lat"));
+  paramLng = parseFloat(params.get("lng"));
+  };
 
   let initialLatLng = { lat: 35.6811673, lng: 139.7670516 };
   if (from === "dashboard" && !isNaN(paramLat) && !isNaN(paramLng)) {
@@ -325,7 +331,7 @@ async function loadPins() {
   });
   try {
     const res = await response.json();
-    pins = res.data;
+    pins = res;
     console.log(pins);
   } catch {
     return;
