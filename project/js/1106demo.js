@@ -217,6 +217,7 @@ function setupPost() {
 function createMarker(pin) {
   if (!pin) return;
 
+  console.log(pin);
   const lat = Number(pin.lat);
   const lng = Number(pin.lng);
   if (isNaN(lat) || isNaN(lng)) return;
