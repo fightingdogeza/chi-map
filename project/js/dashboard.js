@@ -78,7 +78,6 @@ async function deletePin(pin) {
   }
 
   const access_token = localStorage.getItem("access_token");
-  const refresh_token = localStorage.getItem("refresh_token");
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
       method: "POST",
@@ -108,6 +107,7 @@ async function deletePin(pin) {
 
 //管理者用 全投稿取得
 async function loadAllPinsForAdmin() {
+  const access_token = localStorage.getItem("access_token");
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
       headers: {
@@ -124,6 +124,7 @@ async function loadAllPinsForAdmin() {
 
 //自分の投稿を取得
 async function loadDashboardPins(userId) {
+  const access_token = localStorage.getItem("access_token");
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-user-pins", {
       method: "POST",
