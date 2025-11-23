@@ -333,8 +333,8 @@ async function loadPins() {
     return;
   }
 
-  user = await getCurrentUser();
-  console.log(user);
+  // user = await getCurrentUser();
+  // console.log(user);
 
   // フィルター適用
   if (activeFilters.length > 0) {
