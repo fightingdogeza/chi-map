@@ -81,10 +81,10 @@ window.initMap = function () {
   let from;
   let paramLat;
   let paramLng;
-  if(params){
-  from = params.get("from");
-  paramLat = parseFloat(params.get("lat"));
-  paramLng = parseFloat(params.get("lng"));
+  if (params) {
+    from = params.get("from");
+    paramLat = parseFloat(params.get("lat"));
+    paramLng = parseFloat(params.get("lng"));
   };
 
   let initialLatLng = { lat: 35.6811673, lng: 139.7670516 };
@@ -326,16 +326,20 @@ async function deletePin(pin, marker) {
 
 //ピン読み込み
 async function loadPins() {
-  const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
-    headers: { "Content-Type": "application/json" },
-  });
+  let res;
   try {
-    const res = await response.json();
-    pins = res;
-    console.log(pins);
-  } catch {
+    const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
+      headers: { "Content-Type": "application/json" },
+    });
+    res = await response.json();
+  } catch (e) {
+    console.error("JSON パース失敗:", e);
     return;
   }
+    // 必ず配列をセットする
+  pins = Array.isArray(res.data) ? res.data : [];
+
+  console.log("受け取った pins:", pins);
   // フィルター適用
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
@@ -351,7 +355,8 @@ function renderPins(pins) {
   //新しいマーカー作成
   pins.forEach(pin => {
     console.log(pin);
-    createMarker(pin)});
+    createMarker(pin)
+  });
 
   //既存クラスタ削除
   if (markerCluster) {
