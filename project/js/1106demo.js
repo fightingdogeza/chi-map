@@ -334,6 +334,7 @@ async function loadPins() {
   }
 
   user = await getCurrentUser();
+  console.log(user);
 
   // フィルター適用
   if (activeFilters.length > 0) {
