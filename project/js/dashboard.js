@@ -1,7 +1,7 @@
 let supabase = null;
 let pins = [];
 let res;
-const user = await getCurrentUser();
+let user;
 
 async function initSupabase() {
   // Supabaseライブラリが読み込まれているか確認
@@ -54,6 +54,8 @@ async function getCurrentUser() {
 async function init() {
   await initSupabase();
   if (!supabase) return;
+
+   user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
     window.location.href = "https://chi-map.pages.dev/auth";
@@ -86,9 +88,6 @@ async function deletePin(pin) {
       body: JSON.stringify({
         id: pin.id,
         imagePath: pin.image_path,
-        // access_token,
-        // refresh_token,
-        // role: user.role,
       }),
     });
 
@@ -183,11 +182,11 @@ document.getElementById("map").addEventListener("click", () => {
 
 // ログアウト
 document.getElementById("logout").addEventListener("click", async () => {
-  try {
-    await supabase.auth.signOut();
-  } catch (err) {
-    console.warn("Supabase signOutエラー:", err);
-  }
+  // try {
+  //   await supabase.auth.signOut();
+  // } catch (err) {
+  //   console.warn("Supabase signOutエラー:", err);
+  // }
 
   // カスタムトークン削除
   localStorage.removeItem("access_token");
