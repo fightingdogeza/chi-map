@@ -1,5 +1,6 @@
 let supabase = null;
 let pins = [];
+let res;
 const user = await getCurrentUser();
 
 async function initSupabase() {
@@ -12,11 +13,9 @@ async function initSupabase() {
   try {
     const res = await fetch("https://environment.chi-map.workers.dev/init-supabase");
     const { supabaseUrl, supabaseAnonKey } = await res.json();
-
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error("SupabaseのURLまたはキーが取得できません。");
     }
-
     // Supabaseクライアント初期化
     supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
     return supabase;
@@ -33,7 +32,6 @@ async function getCurrentUser() {
     console.log("トークンが存在しません。未ログイン状態です。");
     return null;
   }
-
   try {
     const res = await fetch("https://environment.chi-map.workers.dev/me", {
       headers: { Authorization: `Bearer ${token}` },
@@ -108,7 +106,6 @@ async function deletePin(pin) {
 
 //管理者用 全投稿取得
 async function loadAllPinsForAdmin() {
-  let res;
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
       headers: { "x-user-role": "admin" },
@@ -125,15 +122,15 @@ async function loadAllPinsForAdmin() {
 async function loadDashboardPins(userId) {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-user-pins", {
-      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
     });
-    const pins = await response.json();
-    renderPins(pins);
+    res = await response.json();
   } catch (err) {
     console.error("自分の投稿取得エラー:", err);
   }
+  pins = Array.isArray(res.data) ? res.data : [];
+  renderPins(pins);
 }
 
 //投稿カード描画
