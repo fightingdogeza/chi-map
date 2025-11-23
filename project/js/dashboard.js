@@ -122,6 +122,7 @@ async function loadAllPinsForAdmin() {
 async function loadDashboardPins(userId) {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-user-pins", {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
     });
@@ -168,14 +169,12 @@ function renderPins(pins) {
       .addEventListener("click", () => {
         const lat = pin.lat;
         const lng = pin.lng;
-        // トップページへパラメータ付きで移動
         window.location.href = `https://chi-map.pages.dev?from=dashboard&lat=${lat}&lng=${lng}`;
       });
     container.appendChild(card);
   });
 }
 
-// 地図に戻る
 document.getElementById("map").addEventListener("click", () => {
   window.location.href = "https://chi-map.pages.dev";
 });
