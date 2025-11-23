@@ -1,21 +1,21 @@
-let supabase = null;
-async function initSupabase() {
-  // Supabaseライブラリをグローバルから参照
-  if (typeof window.supabase === 'undefined') {
-    console.error("Supabaseライブラリが読み込まれていません。");
-    alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
-    return;
-  }
-  const res = await fetch('https://environment.chi-map.workers.dev/init-supabase');
-  const { supabaseUrl, supabaseAnonKey } = await res.json();
+// let supabase = null;
+// async function initSupabase() {
+//   // Supabaseライブラリをグローバルから参照
+//   if (typeof window.supabase === 'undefined') {
+//     console.error("Supabaseライブラリが読み込まれていません。");
+//     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
+//     return;
+//   }
+//   const res = await fetch('https://environment.chi-map.workers.dev/init-supabase');
+//   const { supabaseUrl, supabaseAnonKey } = await res.json();
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("SupabaseのURLまたはキーが取得できません。");
-  }
+//   if (!supabaseUrl || !supabaseAnonKey) {
+//     throw new Error("SupabaseのURLまたはキーが取得できません。");
+//   }
 
-  supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-  return supabase;
-}
+//   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+//   return supabase;
+// }
 
 //DOM要素取得
 const showSignupBtn = document.getElementById("show-signup-btn");
@@ -95,9 +95,8 @@ loginForm.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
-    if (data.access_token && data.refresh_token) {
+    if (data.access_token) {
       localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
       window.location.href = "https://chi-map.pages.dev/dashboard";
     } else {
       alert("ログインエラー: " + data.message);
@@ -134,13 +133,13 @@ function handleAuthRedirect() {
   const params = new URLSearchParams(hash.substring(1));
 
   const access_token = params.get("access_token");
-  const refresh_token = params.get("refresh_token");
-  const expires_in = params.get("expires_in");
+  // const refresh_token = params.get("refresh_token");
+  // const expires_in = params.get("expires_in");
 
-  if (access_token && refresh_token) {
+  if (access_token) {
     localStorage.setItem("access_token", access_token);
-    localStorage.setItem("refresh_token", refresh_token);
-    localStorage.setItem("token_expiry", Date.now() + expires_in * 1000);
+    // localStorage.setItem("refresh_token", refresh_token);
+    // localStorage.setItem("token_expiry", Date.now() + expires_in * 1000);
     history.replaceState(null, "", "/");
   }
 }
