@@ -1,4 +1,5 @@
 let supabase = null;
+let pins = [];
 const user = await getCurrentUser();
 
 async function initSupabase() {
@@ -88,7 +89,7 @@ async function deletePin(pin) {
         imagePath: pin.image_path,
         access_token,
         refresh_token,
-        role:user.role,
+        role: user.role,
       }),
     });
 
@@ -108,15 +109,17 @@ async function deletePin(pin) {
 
 //管理者用 全投稿取得
 async function loadAllPinsForAdmin() {
+  let res;
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
       headers: { "x-user-role": "admin" },
     });
-    const pins = await response.json();
-    renderPins(pins);
+    res = await response.json();
   } catch (err) {
     console.error("全投稿取得エラー:", err);
   }
+  pins = Array.isArray(res.data) ? res.data : [];
+  renderPins(pins);
 }
 
 //自分の投稿を取得
@@ -169,7 +172,6 @@ function renderPins(pins) {
       .addEventListener("click", () => {
         const lat = pin.lat;
         const lng = pin.lng;
-
         // トップページへパラメータ付きで移動
         window.location.href = `https://chi-map.pages.dev?from=dashboard&lat=${lat}&lng=${lng}`;
       });

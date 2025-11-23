@@ -19,6 +19,9 @@ const categoryColors = {
   4: "https://maps.google.com/mapfiles/ms/icons/orange-dot.png",
   5: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
 };
+//下部メニュー
+const navLoginBtn = document.getElementById("nav-login");
+
 
 //Supabase初期化
 async function initSupabase() {
@@ -37,9 +40,6 @@ async function initSupabase() {
   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
   return supabase;
 }
-
-//下部メニュー
-const navLoginBtn = document.getElementById("nav-login");
 
 //現在のログインユーザー取得
 async function getCurrentUser() {
@@ -234,7 +234,6 @@ function createMarker(pin) {
 
   // pin情報をマーカーに持たせる（クラスタ内集計に必要）
   marker.pinData = pin;
-
   //クリックイベント
   marker.addListener("click", () => {
 
@@ -339,6 +338,9 @@ async function loadPins() {
     // 必ず配列をセットする
   pins = Array.isArray(res.data) ? res.data : [];
 
+  if(!user){
+    user = getCurrentUser();
+  }
   // フィルター適用
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
