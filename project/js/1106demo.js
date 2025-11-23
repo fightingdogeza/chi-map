@@ -332,7 +332,7 @@ async function loadPins() {
   try {
     const res = await response.json();
     console.log(res.data);
-    pins = res;
+    pins = res.data;
   } catch {
     return;
   }
