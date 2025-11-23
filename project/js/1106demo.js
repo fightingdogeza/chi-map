@@ -353,7 +353,6 @@ function renderPins(pins) {
 
   //新しいマーカー作成
   pins.forEach(pin => {
-    console.log(pin);
     createMarker(pin)
   });
 
