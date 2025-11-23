@@ -60,7 +60,6 @@ async function init() {
     return;
   }
 
-  console.log(user);
   if (user.role === "admin") {
     await loadAllPinsForAdmin();
   } else {
@@ -81,13 +80,15 @@ async function deletePin(pin) {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+            "Authorization": `Bearer ${access_token}`, 
+       },
       body: JSON.stringify({
         id: pin.id,
         imagePath: pin.image_path,
-        access_token,
-        refresh_token,
-        role: user.role,
+        // access_token,
+        // refresh_token,
+        // role: user.role,
       }),
     });
 
