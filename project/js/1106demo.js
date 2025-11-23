@@ -329,10 +329,9 @@ async function loadPins() {
   const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
     headers: { "Content-Type": "application/json" },
   });
-  console.log(response);
-  let pins;
   try {
     const res = await response.json();
+    console.log(res.data);
     pins = res;
   } catch {
     return;
