@@ -29,7 +29,6 @@ async function initSupabase() {
 
   const res = await fetch("https://environment.chi-map.workers.dev/init-supabase");
   const { supabaseUrl, supabaseAnonKey } = await res.json();
-
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error("SupabaseのURLまたはキーが取得できません。");
   }
@@ -170,8 +169,6 @@ function setupPost() {
       btn.disabled = false;
       return;
     }
-
-    user = await getCurrentUser();
     if (!user) {
       alert("ログインが切れています。再度ログインしてください。");
       btn.disabled = false;
@@ -329,13 +326,10 @@ async function loadPins() {
   try {
     const res = await response.json();
     pins = res.data;
+    console.log(pins);
   } catch {
     return;
   }
-
-  // user = await getCurrentUser();
-  // console.log(user);
-
   // フィルター適用
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
