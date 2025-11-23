@@ -295,7 +295,10 @@ async function deletePin(pin, marker) {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${access_token}`,
+      },
       body: JSON.stringify({
         id: pin.id,
         imagePath: pin.image_path,
@@ -333,10 +336,10 @@ async function loadPins() {
     console.error("JSON パース失敗:", e);
     return;
   }
-    // 必ず配列をセットする
+  // 必ず配列をセットする
   pins = Array.isArray(res.data) ? res.data : [];
 
-  if(!user){
+  if (!user) {
     user = getCurrentUser();
   }
   // フィルター適用
