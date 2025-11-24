@@ -11,6 +11,7 @@ let user = null;
 let activeFilters = [];
 let markerCluster = null;
 let pins = [];
+let idleListenerAdded = false;
 const categoryColors = {
   1: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
   2: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
@@ -407,12 +408,19 @@ function renderPins(pins) {
     markerCluster.clearMarkers();
     markerCluster.addMarkers(visibleMarkers);
 
-  }, 80); // ズーム追従が滑らかになる最適値
+  }, 80); 
 
   google.maps.event.clearListeners(map, "dragend");
   google.maps.event.clearListeners(map, "zoom_changed");
-  map.addListener("dragend", updateCluster);
-  map.addListener("zoom_changed", updateCluster);
+  // map.addListener("dragend", updateCluster);
+  // map.addListener("zoom_changed", updateCluster);
+
+  if (!idleListenerAdded) {
+    map.addListener("idle", () => {
+      updateCluster();
+    });
+    idleListenerAdded = true;
+  }
   updateCluster();
 }
 
@@ -470,7 +478,3 @@ function getTokens() {
   access_token = localStorage.getItem("access_token");
   refresh_token = localStorage.getItem("refresh_token");
 }
-// --- ズーム・移動完了後のみ発火 ---
-map.addListener("idle", () => {
-  updateCluster();
-});
