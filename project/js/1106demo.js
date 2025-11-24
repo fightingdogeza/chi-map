@@ -111,11 +111,6 @@ window.initMap = function () {
       openModal();
     }
   });
-
-  // ズーム・ドラッグ完了後にだけクラスタを更新する
-  map.addListener("idle", () => {
-    updateCluster();
-  });
   if (from !== "dashboard") {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -475,3 +470,7 @@ function getTokens() {
   access_token = localStorage.getItem("access_token");
   refresh_token = localStorage.getItem("refresh_token");
 }
+// --- ズーム・移動完了後のみ発火 ---
+map.addListener("idle", () => {
+  updateCluster();
+});
