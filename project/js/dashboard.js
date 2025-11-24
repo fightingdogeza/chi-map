@@ -4,7 +4,6 @@ let res;
 let user;
 
 async function initSupabase() {
-  // Supabaseライブラリが読み込まれているか確認
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
     return;
@@ -16,7 +15,6 @@ async function initSupabase() {
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error("SupabaseのURLまたはキーが取得できません。");
     }
-    // Supabaseクライアント初期化
     supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
     return supabase;
   } catch (err) {
@@ -25,7 +23,6 @@ async function initSupabase() {
   }
 }
 
-//現在のログインユーザー取得
 async function getCurrentUser() {
   const token = localStorage.getItem("access_token");
   if (!token) {
@@ -50,7 +47,6 @@ async function getCurrentUser() {
   }
 }
 
-//初期化
 async function init() {
   await initSupabase();
   if (!supabase) return;
@@ -69,7 +65,6 @@ async function init() {
   }
 }
 
-//投稿削除
 async function deletePin(pin) {
   if (!user) {
     alert("ログインしてください");
@@ -105,7 +100,6 @@ async function deletePin(pin) {
   }
 }
 
-//管理者用 全投稿取得
 async function loadAllPinsForAdmin() {
   const access_token = localStorage.getItem("access_token");
   try {
@@ -122,7 +116,6 @@ async function loadAllPinsForAdmin() {
   renderPins(pins);
 }
 
-//自分の投稿を取得
 async function loadDashboardPins(userId) {
   const access_token = localStorage.getItem("access_token");
   try {
@@ -187,15 +180,7 @@ document.getElementById("map").addEventListener("click", () => {
   window.location.href = "https://chi-map.pages.dev";
 });
 
-// ログアウト
 document.getElementById("logout").addEventListener("click", async () => {
-  // try {
-  //   await supabase.auth.signOut();
-  // } catch (err) {
-  //   console.warn("Supabase signOutエラー:", err);
-  // }
-
-  // カスタムトークン削除
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
   localStorage.removeItem("supabase_session");

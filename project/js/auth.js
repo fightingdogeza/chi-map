@@ -1,23 +1,3 @@
-// let supabase = null;
-// async function initSupabase() {
-//   // Supabaseライブラリをグローバルから参照
-//   if (typeof window.supabase === 'undefined') {
-//     console.error("Supabaseライブラリが読み込まれていません。");
-//     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
-//     return;
-//   }
-//   const res = await fetch('https://environment.chi-map.workers.dev/init-supabase');
-//   const { supabaseUrl, supabaseAnonKey } = await res.json();
-
-//   if (!supabaseUrl || !supabaseAnonKey) {
-//     throw new Error("SupabaseのURLまたはキーが取得できません。");
-//   }
-
-//   supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-//   return supabase;
-// }
-
-//DOM要素取得
 const showSignupBtn = document.getElementById("show-signup-btn");
 const signupForm = document.getElementById("signup-form");
 const loginForm = document.getElementById("login-form");
@@ -25,7 +5,6 @@ const backToLoginBtn = document.getElementById("back-to-login-btn");
 const mapToBtn = document.getElementById("map");
 const backToLogin = document.getElementById("back-to-login");
 const btns = document.querySelectorAll("button");
-//フォーム切替
 showSignupBtn.addEventListener("click", () => {
   loginForm.style.display = "none";
   showSignupBtn.style.display = "none";
@@ -40,7 +19,6 @@ backToLoginBtn.addEventListener("click", () => {
   showSignupBtn.style.display = "inline-block";
 });
 
-//新規登録
 signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   btns.forEach(btn => {
@@ -102,7 +80,6 @@ loginForm.addEventListener("submit", async (e) => {
       alert("ログインエラー: " + data.message);
       throw new Error(data.error || "ログインに失敗しました");
     }
-    // window.location.href = "https://chi-map.pages.dev/dashboard"; // ログイン後に移動
   } catch (err) {
     alert("ログインエラー: " + err.message);
   } finally {
@@ -113,7 +90,6 @@ loginForm.addEventListener("submit", async (e) => {
 });
 
 
-//地図へ戻るボタン
 mapToBtn.addEventListener("click", function () {
   window.location.href = "https://chi-map.pages.dev";
 });
@@ -143,5 +119,4 @@ function handleAuthRedirect() {
     history.replaceState(null, "", "/");
   }
 }
-// ページ読み込み時に実行
 document.addEventListener("DOMContentLoaded", handleAuthRedirect);

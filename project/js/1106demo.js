@@ -1,4 +1,3 @@
-//グローバル変数
 let map;
 let tempMarker = null;
 let modalOpen = false;
@@ -19,11 +18,9 @@ const categoryColors = {
   4: "https://maps.google.com/mapfiles/ms/icons/orange-dot.png",
   5: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
 };
-//下部メニュー
 const navLoginBtn = document.getElementById("nav-login");
 
 
-//Supabase初期化
 async function initSupabase() {
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
@@ -41,7 +38,6 @@ async function initSupabase() {
   return supabase;
 }
 
-//現在のログインユーザー取得
 async function getCurrentUser() {
   getTokens();
   if (!access_token) return null;
@@ -75,7 +71,6 @@ async function getCurrentUser() {
   }
 }
 
-//Google Map 初期化
 window.initMap = function () {
   const params = new URLSearchParams(window.location.search);
   let from;
@@ -126,7 +121,6 @@ window.initMap = function () {
   }
 };
 
-//modal.html 読み込み
 function loadModal() {
   return fetch("modal.html")
     .then((res) => res.text())
@@ -153,7 +147,6 @@ function closeModal() {
   }
 }
 
-//投稿フォーム
 function setupPost() {
   const form = document.getElementById("pinForm");
   const btn = document.getElementById("submitBtn");
@@ -230,19 +223,16 @@ function createMarker(pin) {
     icon: iconUrl,
   });
 
-  // pin情報をマーカーに持たせる（クラスタ内集計に必要）
   marker.pinData = pin;
-  //クリックイベント
   marker.addListener("click", () => {
 
     const pos = marker.getPosition();
     const projection = map.getProjection();
 
-    // InfoWindow を画面中央より 120px 下にずらす
     if (projection) {
       const point = projection.fromLatLngToPoint(pos);
       const scale = Math.pow(2, map.getZoom());
-      const pixelOffsetY = -150 / scale;  // ← 下へ 120px 分ズラす
+      const pixelOffsetY = -150 / scale;
 
       const adjustedPoint = new google.maps.Point(
         point.x,
@@ -281,7 +271,7 @@ function createMarker(pin) {
     }
   });
 
-  markers.push(marker); // これがクラスタの基本
+  markers.push(marker);
 }
 async function deletePin(pin, marker) {
   const user = await getCurrentUser();
@@ -323,8 +313,6 @@ async function deletePin(pin, marker) {
   }
 }
 
-
-//ピン読み込み
 async function loadPins() {
   let res;
   try {
@@ -336,38 +324,26 @@ async function loadPins() {
     console.error("JSON パース失敗:", e);
     return;
   }
-  // 必ず配列をセットする
   pins = Array.isArray(res.data) ? res.data : [];
-
   if (!user) {
     user = getCurrentUser();
   }
-  // フィルター適用
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
   }
-  // ピン描画処理（クラスタリング）
   renderPins(pins);
 }
 function renderPins(pins) {
-  //古いマーカー削除
   markers.forEach(m => m.setMap(null));
   markers = [];
-
-  //新しいマーカー作成
   pins.forEach(pin => {
     createMarker(pin)
   });
-
-  //既存クラスタ削除
   if (markerCluster) {
     markerCluster.clearMarkers();
   }
-
-  //InfoWindow 初期化
   if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
 
-  //新クラスタ生成
   markerCluster = new markerClusterer.MarkerClusterer({
     map,
     markers,
@@ -404,7 +380,6 @@ function renderPins(pins) {
       },
     },
   });
-  //クラスタクリック時のズーム抑止
   markerCluster.addListener("click", (event) => {
     event.stop && event.stop();
   });
@@ -430,7 +405,6 @@ function renderPins(pins) {
   updateCluster();
 }
 
-// --- ナビメニュー更新 ---
 async function updateNavMenu() {
   try {
     user = await getCurrentUser();
@@ -462,11 +436,8 @@ window.addEventListener("DOMContentLoaded", () => {
     drawer.style.right = "-300px";
     overlay.style.display = "none";
   }
-
   document.getElementById("closeFilterDrawer")
     .addEventListener("click", closeFilterDrawer);
-
-  // フィルタ適用ボタン
   document.getElementById("applyFilterBtn")
     .addEventListener("click", () => {
       const checks = document.querySelectorAll(".filter-checkbox:checked");
