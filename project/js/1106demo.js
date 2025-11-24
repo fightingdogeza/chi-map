@@ -111,6 +111,11 @@ window.initMap = function () {
       openModal();
     }
   });
+
+  // ズーム・ドラッグ完了後にだけクラスタを更新する
+  map.addListener("idle", () => {
+    updateCluster();
+  });
   if (from !== "dashboard") {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -265,7 +270,6 @@ function createMarker(pin) {
       }, 100);
     }
   });
-
   markers.push(marker);
 }
 async function deletePin(pin, marker) {
@@ -392,12 +396,23 @@ function renderPins(pins) {
     setTimeout(() => updateCluster(), 100);
   });
 
+  // --- クラスタを安定更新する関数 ---
   const updateCluster = _.debounce(() => {
-    if (!map || !map.getBounds()) return;
-    if (infoWindow.getMap()) return;
+    if (!map) return;
+
+    const bounds = map.getBounds();
+    if (!bounds) return;
+
+    // 画面内マーカーだけ抽出
+    const visibleMarkers = markers.filter(marker =>
+      bounds.contains(marker.getPosition())
+    );
+
+    // 既存のクラスタリセット → 画面内だけ登録
     markerCluster.clearMarkers();
-    markerCluster.addMarkers(markers);
-  }, 200);
+    markerCluster.addMarkers(visibleMarkers);
+
+  }, 80); // ズーム追従が滑らかになる最適値
 
   google.maps.event.clearListeners(map, "dragend");
   google.maps.event.clearListeners(map, "zoom_changed");
