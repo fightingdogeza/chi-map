@@ -185,14 +185,12 @@ function setupPost() {
     if (fileInput.files.length > 0) {
       formData.append("image", fileInput.files[0]);
     }
-
     try {
       const response = await fetch("https://environment.chi-map.workers.dev/post-pin", {
         method: "POST",
         body: formData,
       });
       const result = await response.json();
-
       if (result.success) {
         alert("投稿が完了しました！");
         btn.disabled = false;
@@ -233,7 +231,6 @@ function createMarker(pin) {
       const point = projection.fromLatLngToPoint(pos);
       const scale = Math.pow(2, map.getZoom());
       const pixelOffsetY = -150 / scale;
-
       const adjustedPoint = new google.maps.Point(
         point.x,
         point.y + pixelOffsetY
@@ -245,9 +242,7 @@ function createMarker(pin) {
       map.panTo(pos);
     }
     let categoryName = pin.categories?.name ?? "未分類";
-
     const showDelete = user && user.id === pin.uid;
-
     const content = `
     <div>
       <h3>${pin.title}</h3>
@@ -380,8 +375,22 @@ function renderPins(pins) {
       },
     },
   });
-  markerCluster.addListener("click", (event) => {
-    event.stop && event.stop();
+  //変更＋追加
+  markerCluster.addListener("click", (cluster) => {
+    const markersInCluster = cluster.getMarkers();
+    if (!markersInCluster || markersInCluster.length === 0) return;
+    const bounds = new google.maps.LatLngBounds();
+    markersInCluster.forEach(m => bounds.extend(m.getPosition()));
+
+    // クラスタに合わせてズーム
+    map.fitBounds(bounds);
+
+    // updateCluster() が走ってズームが浅くなる対策で +1 補正
+    google.maps.event.addListenerOnce(map, "idle", () => {
+      if (map.getZoom() < 19) {
+        map.setZoom(map.getZoom() + 1);
+      }
+    });
   });
 
   const updateCluster = _.debounce(() => {
@@ -389,10 +398,18 @@ function renderPins(pins) {
     if (infoWindow.getMap()) return;
 
     const bounds = map.getBounds();
-
+    //追加  
+    markers.forEach(marker => {
+      if (bounds.contains(marker.getPosition())) {
+        marker.setVisible(true);
+      } else {
+        marker.setVisible(false);
+      }
+    });
+    //変更と追加
     markerCluster.clearMarkers();
     const visibleMarkers = markers.filter(
-      (marker) => marker.getVisible() && bounds.contains(marker.getPosition())
+      (marker) => marker.getVisible()
     );
     markerCluster.addMarkers(visibleMarkers);
   }, 200);
@@ -401,9 +418,9 @@ function renderPins(pins) {
   google.maps.event.clearListeners(map, "zoom_changed");
   map.addListener("dragend", updateCluster);
   map.addListener("zoom_changed", updateCluster);
-
   updateCluster();
 }
+
 
 async function updateNavMenu() {
   try {
