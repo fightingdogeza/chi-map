@@ -397,18 +397,9 @@ function renderPins(pins) {
   const updateCluster = _.debounce(() => {
     if (!map || !map.getBounds()) return;
     if (infoWindow.getMap()) return;
-
-    const bounds = map.getBounds();
-    //追加  
-    markers.forEach(marker => {
-      marker.setVisible(bounds.contains(marker.getPosition()));
-    });
     //変更と追加
     markerCluster.clearMarkers();
-    const visibleMarkers = markers.filter(
-      (marker) => marker.getVisible()
-    );
-    markerCluster.addMarkers(visibleMarkers);
+    markerCluster.addMarkers(markers);
   }, 200);
 
   google.maps.event.clearListeners(map, "dragend");
