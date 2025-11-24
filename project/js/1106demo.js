@@ -377,7 +377,7 @@ function renderPins(pins) {
   });
   //変更＋追加
   markerCluster.addListener("click", (event) => {
-    const markersInCluster = event.markers();
+    const markersInCluster = event.markers;
     if (!markersInCluster || markersInCluster.length === 0) return;
     const bounds = new google.maps.LatLngBounds();
     markersInCluster.forEach(m => bounds.extend(m.getPosition()));
