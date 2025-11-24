@@ -391,6 +391,7 @@ function renderPins(pins) {
         map.setZoom(map.getZoom() + 1);
       }
     });
+    setTimeout(() => updateCluster(), 100);
   });
 
   const updateCluster = _.debounce(() => {
@@ -400,11 +401,7 @@ function renderPins(pins) {
     const bounds = map.getBounds();
     //追加  
     markers.forEach(marker => {
-      if (bounds.contains(marker.getPosition())) {
-        marker.setVisible(true);
-      } else {
-        marker.setVisible(false);
-      }
+      marker.setVisible(bounds.contains(marker.getPosition()));
     });
     //変更と追加
     markerCluster.clearMarkers();
@@ -442,7 +439,6 @@ async function updateNavMenu() {
 window.addEventListener("DOMContentLoaded", () => {
   const drawer = document.getElementById("filterDrawer");
   const overlay = document.getElementById("filterOverlay");
-
   const openBtn = document.getElementById("nav-list");
   openBtn.addEventListener("click", () => {
     drawer.style.right = "0";
@@ -462,12 +458,10 @@ window.addEventListener("DOMContentLoaded", () => {
       closeFilterDrawer();
       loadPins();
     });
-
   overlay.addEventListener("click", () => {
     closeFilterDrawer();
   });
   let isFilterOpen = false;
-
   document.getElementById("closeFilterDrawer").addEventListener("click", () => {
     drawer.style.right = "-300px";
     isFilterOpen = false;
