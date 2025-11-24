@@ -2,13 +2,11 @@ let supabase = null;
 let pins = [];
 let res;
 let user;
-
 async function initSupabase() {
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
     return;
   }
-
   try {
     const res = await fetch("https://environment.chi-map.workers.dev/init-supabase");
     const { supabaseUrl, supabaseAnonKey } = await res.json();
@@ -152,7 +150,6 @@ function renderPins(pins) {
     card.dataset.lat = pin.lat;
     card.dataset.lng = pin.lng;
     const categoryName = pin.categories?.name ?? "未分類";
-
     card.innerHTML = `
       <h3>${pin.title}</h3>
       <p>${pin.description}</p>
@@ -162,7 +159,6 @@ function renderPins(pins) {
       <button class="goto-map-btn">地図で見る</button>
       <button class="delete-btn">削除</button>
     `;
-
     card.querySelector(".delete-btn").addEventListener("click", () =>
       deletePin(pin)
     );

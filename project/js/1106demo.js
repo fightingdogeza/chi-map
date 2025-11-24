@@ -20,14 +20,12 @@ const categoryColors = {
 };
 const navLoginBtn = document.getElementById("nav-login");
 
-
 async function initSupabase() {
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
     alert("supabase-jsのCDNがHTMLに読み込まれているか確認してください。");
     return;
   }
-
   const res = await fetch("https://environment.chi-map.workers.dev/init-supabase");
   const { supabaseUrl, supabaseAnonKey } = await res.json();
   if (!supabaseUrl || !supabaseAnonKey) {
@@ -235,7 +233,6 @@ function createMarker(pin) {
         point.x,
         point.y + pixelOffsetY
       );
-
       const adjustedLatLng = projection.fromPointToLatLng(adjustedPoint);
       map.panTo(adjustedLatLng);
     } else {
@@ -306,7 +303,6 @@ async function deletePin(pin, marker) {
     alert("削除中にエラーが発生しました。");
   }
 }
-
 async function loadPins() {
   let res;
   try {
@@ -350,7 +346,6 @@ function renderPins(pins) {
           const cat = m.pinData?.categories?.name || "不明";
           categoryCount[cat] = (categoryCount[cat] || 0) + 1;
         });
-
         const categorySummary = Object.entries(categoryCount)
           .map(([cat, num]) => `${cat}: ${num}`)
           .join(", ");
@@ -390,22 +385,18 @@ function renderPins(pins) {
     });
     setTimeout(() => updateCluster(), 100);
   });
-
   const updateCluster = _.debounce(() => {
     if (!map || !map.getBounds()) return;
     if (infoWindow.getMap()) return;
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markers);
   }, 50);
-
   google.maps.event.clearListeners(map, "dragend");
   google.maps.event.clearListeners(map, "zoom_changed");
   map.addListener("dragend", updateCluster);
   map.addListener("zoom_changed", updateCluster);
   updateCluster();
 }
-
-
 async function updateNavMenu() {
   try {
     user = await getCurrentUser();
