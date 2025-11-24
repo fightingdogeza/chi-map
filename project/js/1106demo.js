@@ -375,18 +375,15 @@ function renderPins(pins) {
       },
     },
   });
-  //変更＋追加
   markerCluster.addListener("click", (event) => {
-    if (infoWindow) infoWindow.close();
-    const markersInCluster = event.markers;
+    if (infoWindow) {
+      infoWindow.close();
+      infoWindow.setMap(null);
+    } const markersInCluster = event.markers;
     if (!markersInCluster || markersInCluster.length === 0) return;
     const bounds = new google.maps.LatLngBounds();
     markersInCluster.forEach(m => bounds.extend(m.getPosition()));
-
-    // クラスタに合わせてズーム
     map.fitBounds(bounds);
-
-    // updateCluster() が走ってズームが浅くなる対策で +1 補正
     google.maps.event.addListenerOnce(map, "idle", () => {
       if (map.getZoom() < 19) {
         map.setZoom(map.getZoom() + 1);
@@ -398,7 +395,6 @@ function renderPins(pins) {
   const updateCluster = _.debounce(() => {
     if (!map || !map.getBounds()) return;
     if (infoWindow.getMap()) return;
-    //変更と追加
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markers);
   }, 200);
