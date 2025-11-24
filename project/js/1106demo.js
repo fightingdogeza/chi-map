@@ -11,7 +11,6 @@ let user = null;
 let activeFilters = [];
 let markerCluster = null;
 let pins = [];
-let idleListenerAdded = false;
 const categoryColors = {
   1: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
   2: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
@@ -392,35 +391,17 @@ function renderPins(pins) {
     setTimeout(() => updateCluster(), 100);
   });
 
-  // --- クラスタを安定更新する関数 ---
   const updateCluster = _.debounce(() => {
-    if (!map) return;
-
-    const bounds = map.getBounds();
-    if (!bounds) return;
-
-    // 画面内マーカーだけ抽出
-    const visibleMarkers = markers.filter(marker =>
-      bounds.contains(marker.getPosition())
-    );
-
-    // 既存のクラスタリセット → 画面内だけ登録
+    if (!map || !map.getBounds()) return;
+    if (infoWindow.getMap()) return;
     markerCluster.clearMarkers();
-    markerCluster.addMarkers(visibleMarkers);
-
-  }, 80); 
+    markerCluster.addMarkers(markers);
+  }, 50);
 
   google.maps.event.clearListeners(map, "dragend");
   google.maps.event.clearListeners(map, "zoom_changed");
-  // map.addListener("dragend", updateCluster);
-  // map.addListener("zoom_changed", updateCluster);
-
-  if (!idleListenerAdded) {
-    map.addListener("idle", () => {
-      updateCluster();
-    });
-    idleListenerAdded = true;
-  }
+  map.addListener("dragend", updateCluster);
+  map.addListener("zoom_changed", updateCluster);
   updateCluster();
 }
 
