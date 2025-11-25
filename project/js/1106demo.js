@@ -191,17 +191,16 @@ function setupPost() {
       const result = await response.json();
       if (result.success) {
         alert("投稿が完了しました！");
-        btn.disabled = false;
         closeModal();
         await loadPins();
       } else {
         console.error("投稿エラー:", result.error);
         alert("投稿に失敗しました。");
-        btn.disabled = false;
       }
     } catch (err) {
       console.error("投稿例外:", err);
       alert("投稿に失敗しました。");
+    }finally{
       btn.disabled = false;
     }
   });
@@ -390,7 +389,7 @@ function renderPins(pins) {
     if (infoWindow.getMap()) return;
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markers);
-  }, 50);
+  }, 100);
   google.maps.event.clearListeners(map, "dragend");
   google.maps.event.clearListeners(map, "zoom_changed");
   map.addListener("dragend", updateCluster);

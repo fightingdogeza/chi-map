@@ -2,6 +2,7 @@ let supabase = null;
 let pins = [];
 let res;
 let user;
+let access_token;
 async function initSupabase() {
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
@@ -22,25 +23,22 @@ async function initSupabase() {
 }
 
 async function getCurrentUser() {
-  const token = localStorage.getItem("access_token");
-  if (!token) {
-    console.log("トークンが存在しません。未ログイン状態です。");
+  access_token = localStorage.getItem("access_token");
+  if (!access_token) {
     return null;
   }
   try {
     const res = await fetch("https://environment.chi-map.workers.dev/me", {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${access_token}` },
     });
 
     const data = await res.json();
     if (!res.ok) {
-      console.warn("認証エラー:", data.error);
       return null;
     }
 
     return data.user;
   } catch (err) {
-    console.error("ユーザー情報取得エラー:", err);
     return null;
   }
 }
@@ -48,7 +46,6 @@ async function getCurrentUser() {
 async function init() {
   await initSupabase();
   if (!supabase) return;
-
   user = await getCurrentUser();
   if (!user) {
     alert("ログインが必要です。");
@@ -70,7 +67,6 @@ async function deletePin(pin) {
     return;
   }
 
-  const access_token = localStorage.getItem("access_token");
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
       method: "POST",
@@ -99,7 +95,6 @@ async function deletePin(pin) {
 }
 
 async function loadAllPinsForAdmin() {
-  const access_token = localStorage.getItem("access_token");
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
       headers: {
@@ -115,7 +110,6 @@ async function loadAllPinsForAdmin() {
 }
 
 async function loadDashboardPins(userId) {
-  const access_token = localStorage.getItem("access_token");
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-user-pins", {
       method: "POST",
@@ -184,6 +178,4 @@ document.getElementById("logout").addEventListener("click", async () => {
   alert("ログアウトしました。");
   window.location.href = "https://chi-map.pages.dev/auth";
 });
-
-//初期化呼び出し
 init();
