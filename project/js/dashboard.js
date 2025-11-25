@@ -81,7 +81,7 @@ async function deletePin(pin) {
     });
 
     const result = await response.json();
-
+    const card = document.createElement("div");
     if (result.success) {
       alert("削除しました");
       document.getElementById(`pin-${pin.id}`)?.remove();
@@ -91,6 +91,8 @@ async function deletePin(pin) {
   } catch (err) {
     console.error("削除エラー:", err);
     alert("削除中にエラーが発生しました。");
+  }finally{
+    card.querySelector(".delete-btn").disabled = "true";
   }
 }
 
@@ -127,7 +129,6 @@ async function loadDashboardPins(userId) {
   renderPins(pins);
 }
 
-//投稿カード描画
 function renderPins(pins) {
   const container = document.getElementById("content");
   container.innerHTML = "";
@@ -153,9 +154,11 @@ function renderPins(pins) {
       <button class="goto-map-btn">地図で見る</button>
       <button class="delete-btn">削除</button>
     `;
-    card.querySelector(".delete-btn").addEventListener("click", () =>
-      deletePin(pin)
-    );
+    card.querySelector(".delete-btn").addEventListener("click", () =>{
+      card.querySelector(".delete-btn").disabled = "false";
+      deletePin(pin);
+
+  });
     card.querySelector(".goto-map-btn")
       .addEventListener("click", () => {
         const lat = pin.lat;
