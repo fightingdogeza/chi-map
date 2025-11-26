@@ -174,6 +174,8 @@ function setupPost() {
     }
 
     let formData = new FormData();
+    let lat = selectedLatLng.lat();
+    let lng = selectedLatLng.lng();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("category_id", category_id);
