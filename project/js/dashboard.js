@@ -63,7 +63,10 @@ async function deletePin(pin) {
     window.location.href = "https://chi-map.pages.dev/auth";
     return;
   }
-
+  access_token = localStorage.getItem("access_token");
+  console.log(pin.id);
+  console.log(pin.image_path);
+  console.log(access_token);
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/delete-pin", {
       method: "POST",
