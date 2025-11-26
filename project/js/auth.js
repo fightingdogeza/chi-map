@@ -35,7 +35,6 @@ signupForm.addEventListener("submit", async (e) => {
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    console.log(data);
     if (!res.ok) throw new Error(data.error || "登録に失敗しました");
     alert("確認メールを送信しました。");
     signupForm.style.display = "none";
