@@ -183,6 +183,18 @@ function setupPost() {
     if (fileInput.files.length > 0) {
       formData.append("image", fileInput.files[0]);
     }
+
+    const geoRes = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=ja&key=AIzaSyB-skBRSV7M93zmrENqYtRAExZ5ix-kVrw`);
+    const geoData = await geoRes.json();
+        let address = "";
+    if (geoData.status === "OK") {
+      // 町村区までを取得
+      const components = geoData.results[0].address_components;
+      const locality = components.find(c => c.types.includes("locality"))?.long_name || "";
+      const sublocality = components.find(c => c.types.includes("sublocality_level_1"))?.long_name || "";
+      address = `${locality}${sublocality}`;
+    }
+    console.log(address);
     try {
       const response = await fetch("https://environment.chi-map.workers.dev/post-pin", {
         method: "POST",
@@ -200,7 +212,7 @@ function setupPost() {
     } catch (err) {
       console.error("投稿例外:", err);
       alert("投稿に失敗しました。");
-    }finally{
+    } finally {
       btn.disabled = false;
     }
   });
