@@ -31,12 +31,10 @@ async function getCurrentUser() {
     const res = await fetch("https://environment.chi-map.workers.dev/me", {
       headers: { Authorization: `Bearer ${access_token}` },
     });
-
     const data = await res.json();
     if (!res.ok) {
       return null;
     }
-
     return data.user;
   } catch (err) {
     return null;
@@ -52,7 +50,6 @@ async function init() {
     window.location.href = "https://chi-map.pages.dev/auth";
     return;
   }
-
   if (user.role === "admin") {
     await loadAllPinsForAdmin();
   } else {
@@ -81,7 +78,6 @@ async function deletePin(pin) {
     });
 
     const result = await response.json();
-    const card = document.createElement("div");
     if (result.success) {
       alert("削除しました");
       document.getElementById(`pin-${pin.id}`)?.remove();
@@ -91,11 +87,8 @@ async function deletePin(pin) {
   } catch (err) {
     console.error("削除エラー:", err);
     alert("削除中にエラーが発生しました。");
-  }finally{
-    card.querySelector(".delete-btn").disabled = "true";
   }
 }
-
 async function loadAllPinsForAdmin() {
   try {
     const response = await fetch("https://environment.chi-map.workers.dev/get-all-pins", {
@@ -157,6 +150,7 @@ function renderPins(pins) {
     card.querySelector(".delete-btn").addEventListener("click", () =>{
       card.querySelector(".delete-btn").disabled = "false";
       deletePin(pin);
+      card.querySelector(".delete-btn").disabled = "true";
 
   });
     card.querySelector(".goto-map-btn")
