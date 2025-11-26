@@ -45,7 +45,7 @@ signupForm.addEventListener("submit", async (e) => {
 
     const messageEl = document.getElementById("signup-message");
     if (messageEl) {
-      messageEl.textContent = "ご自身の登録されたメールを確認してください。<br>アカウントはまだ有効化されていません。";
+      messageEl.textContent = "ご自身の登録されたメールを確認してください。アカウントはまだ有効化されていません。";
       messageEl.style.display = "block";
     }
   } catch (err) {
