@@ -14,7 +14,9 @@ async function initSupabase() {
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error("SupabaseのURLまたはキーが取得できません。");
     }
-    supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+    supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { debug: false }
+    });
     return supabase;
   } catch (err) {
     console.error(" Supabase初期化エラー:", err);
@@ -150,12 +152,12 @@ function renderPins(pins) {
       <button class="goto-map-btn">地図で見る</button>
       <button class="delete-btn">削除</button>
     `;
-    card.querySelector(".delete-btn").addEventListener("click", () =>{
+    card.querySelector(".delete-btn").addEventListener("click", () => {
       card.querySelector(".delete-btn").disabled = "false";
       deletePin(pin);
       card.querySelector(".delete-btn").disabled = "true";
 
-  });
+    });
     card.querySelector(".goto-map-btn")
       .addEventListener("click", () => {
         const lat = pin.lat;
