@@ -205,6 +205,7 @@ function setupPost() {
 
     const { prefecture, city, district } = await getAddressFromLatLng(lat, lng);
     console.log(prefecture);
+    console.log(data);
     if(prefecture || city || district){
     formData.append("prefecture",prefecture);
     formData.append("city",city);
@@ -314,7 +315,6 @@ async function deletePin(pin, marker) {
         refresh_token,
       }),
     });
-
     const result = await response.json();
 
     if (result.success) {
@@ -360,7 +360,6 @@ function renderPins(pins) {
     markerCluster.clearMarkers();
   }
   if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
-
   markerCluster = new markerClusterer.MarkerClusterer({
     map,
     markers,
@@ -466,7 +465,6 @@ window.addEventListener("DOMContentLoaded", () => {
   overlay.addEventListener("click", () => {
     closeFilterDrawer();
   });
-  let isFilterOpen = false;
   document.getElementById("closeFilterDrawer").addEventListener("click", () => {
     drawer.style.right = "-300px";
     isFilterOpen = false;

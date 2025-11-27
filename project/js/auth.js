@@ -88,19 +88,14 @@ loginForm.addEventListener("submit", async (e) => {
     });
   }
 });
-
-
 mapToBtn.addEventListener("click", function () {
   window.location.href = "https://chi-map.pages.dev";
 });
-
-
 backToLogin.addEventListener("click", (e) => {
   e.preventDefault();
   forgotForm.style.display = "none";
   loginForm.style.display = "block";
 });
-
 
 function handleAuthRedirect() {
   const hash = window.location.hash;
