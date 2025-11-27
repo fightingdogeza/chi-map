@@ -204,6 +204,7 @@ function setupPost() {
     }
 
     const { prefecture, city, district } = await getAddressFromLatLng(lat, lng);
+    console.log(prefecture);
     if(prefecture || city || district){
     formData.append("prefecture",prefecture);
     formData.append("city",city);
