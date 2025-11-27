@@ -193,17 +193,23 @@ function setupPost() {
         });
         const data = await res.json();
         const addr = data.address || {};
-        const city = addr.city || addr.town || addr.village || addr.county || "";
-        const district = addr.suburb || addr.neighbourhood || "";
-        return `${city}${district}`;
+        const prefecture = addr.state || ""; // 都道府県
+        const city = addr.city || addr.town || addr.village || addr.county || ""; // 市区町村
+        const district = addr.suburb || addr.neighbourhood || ""; // 町域
+        return { prefecture, city, district };
       } catch (err) {
         console.error("住所取得エラー:", err);
         return "";
       }
     }
 
-    const address = await getAddressFromLatLng(lat, lng);
-    console.log("取得住所:", address);
+    const { prefecture, city, district } = await getAddressFromLatLng(lat, lng);
+    if(prefecture || city || district){
+    formData.append("prefecture",prefecture);
+    formData.append("city",city);
+    formData.append("district",district);
+    }
+
     try {
       const response = await fetch("https://environment.chi-map.workers.dev/post-pin", {
         method: "POST",
