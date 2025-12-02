@@ -114,4 +114,6 @@ function handleAuthRedirect() {
     history.replaceState(null, "", "/");
   }
 }
-document.addEventListener("DOMContentLoaded", handleAuthRedirect);
+window.addEventListener("DOMContentLoaded", () => {
+  handleAuthRedirect();
+});

@@ -24,6 +24,24 @@
       <button id="logout" class="btn logout-btn">ログアウト</button>
     </div>
 
+        <div id="filterDrawer" class="filter-drawer">
+      <div class="filter-header">
+        <h3>フィルター</h3>
+        <button id="closeFilterDrawer">✕</button>
+      </div>
+      <div class="filter-body">
+        <label><input type="checkbox" class="filter-checkbox" value="1"> 交通</label><br>
+        <label><input type="checkbox" class="filter-checkbox" value="2"> 不審者情報</label><br>
+        <label><input type="checkbox" class="filter-checkbox" value="3"> 洪水</label><br>
+        <label><input type="checkbox" class="filter-checkbox" value="4"> 危険物</label><br>
+        <label><input type="checkbox" class="filter-checkbox" value="5"> その他</label><br>
+      </div>
+      <div class="filter-footer">
+        <button id="applyFilterBtn">適用</button>
+      </div>
+    </div>
+<div id="filterOverlay"></div>
+
   </div>
 </body>
 

@@ -177,4 +177,36 @@ document.getElementById("logout").addEventListener("click", async () => {
   alert("ログアウトしました。");
   window.location.href = "https://chi-map.pages.dev/auth";
 });
+
+window.addEventListener("DOMContentLoaded", () => {
+  const drawer = document.getElementById("filterDrawer");
+  const overlay = document.getElementById("filterOverlay");
+  const openBtn = document.getElementById("nav-list");
+  openBtn.addEventListener("click", () => {
+    drawer.style.right = "0";
+    overlay.style.display = "block";
+  });
+
+  function closeFilterDrawer() {
+    drawer.style.right = "-300px";
+    overlay.style.display = "none";
+  }
+  document.getElementById("closeFilterDrawer")
+    .addEventListener("click", closeFilterDrawer);
+  document.getElementById("applyFilterBtn")
+    .addEventListener("click", () => {
+      const checks = document.querySelectorAll(".filter-checkbox:checked");
+      activeFilters = Array.from(checks).map(c => Number(c.value));
+      closeFilterDrawer();
+      console.log(activeFilters);
+      renderPins(activeFilters);
+    });
+  overlay.addEventListener("click", () => {
+    closeFilterDrawer();
+  });
+  document.getElementById("closeFilterDrawer").addEventListener("click", () => {
+    drawer.style.right = "-300px";
+    isFilterOpen = false;
+  });
+});
 init();

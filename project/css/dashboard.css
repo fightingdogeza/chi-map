@@ -101,6 +101,43 @@ body {
   border-radius: 4px;
 }
 
+/* ドロワー本体 */
+.filter-drawer {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100%;
+  background: white;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+  z-index: 2500;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}/* ドロワーが開いた状態 */
+.filter-drawer.open {
+  right: 0;
+}
+
+/*ドロワー内のレイアウト*/
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.filter-body {
+  padding: 10px;
+}
+
+.filter-footer {
+  text-align: center;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+
 /*スマホ対応*/
 @media (max-width: 480px) {
   .dashboard-container {
