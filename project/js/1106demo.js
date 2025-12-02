@@ -190,7 +190,7 @@ function setupPost() {
       //try {
         //const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=ja`, {
           //headers: { "User-Agent": "ChiMapApp/1.0 (waruka698@gmail.com)" }
-        });
+        // });
         //const data = await res.json();
         //const addr = data.address || {};
         //const prefecture = addr.state || ""; // 都道府県
