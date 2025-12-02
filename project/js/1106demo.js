@@ -186,31 +186,31 @@ function setupPost() {
       formData.append("image", fileInput.files[0]);
     }
     // --- Nominatim で住所取得 ---
-    async function getAddressFromLatLng(lat, lng) {
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=ja`, {
-          headers: { "User-Agent": "ChiMapApp/1.0 (waruka698@gmail.com)" }
+    //async function getAddressFromLatLng(lat, lng) {
+      //try {
+        //const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=ja`, {
+          //headers: { "User-Agent": "ChiMapApp/1.0 (waruka698@gmail.com)" }
         });
-        const data = await res.json();
-        const addr = data.address || {};
-        const prefecture = addr.state || ""; // 都道府県
-        const city = addr.city || addr.town || addr.village || addr.county || ""; // 市区町村
-        const district = addr.suburb || addr.neighbourhood || ""; // 町域
-        return { prefecture, city, district };
-      } catch (err) {
-        console.error("住所取得エラー:", err);
-        return "";
-      }
-    }
+        //const data = await res.json();
+        //const addr = data.address || {};
+        //const prefecture = addr.state || ""; // 都道府県
+        //const city = addr.city || addr.town || addr.village || addr.county || ""; // 市区町村
+        //const district = addr.suburb || addr.neighbourhood || ""; // 町域
+        //return { prefecture, city, district };
+      //} catch (err) {
+        //console.error("住所取得エラー:", err);
+        //return "";
+   //   }
+   // }
 
-    const { prefecture, city, district } = await getAddressFromLatLng(lat, lng);
-    console.log(prefecture);
-    console.log(data.state);
-    if(prefecture || city || district){
-    formData.append("prefecture",prefecture);
-    formData.append("city",city);
-    formData.append("district",district);
-    }
+    //const { prefecture, city, district } = await getAddressFromLatLng(lat, lng);
+    //console.log(prefecture);
+    //console.log(data.state);
+    //if(prefecture || city || district){
+    //formData.append("prefecture",prefecture);
+    //formData.append("city",city);
+    //formData.append("district",district);
+ //   }
 
     try {
       const response = await fetch("https://environment.chi-map.workers.dev/post-pin", {
