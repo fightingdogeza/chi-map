@@ -3,6 +3,9 @@ let pins = [];
 let res;
 let user;
 let access_token;
+let filteredPins;
+let activeFilters = [];
+
 async function initSupabase() {
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
@@ -190,7 +193,6 @@ window.addEventListener("DOMContentLoaded", () => {
       const checks = document.querySelectorAll(".filter-checkbox:checked");
       activeFilters = Array.from(checks).map(c => Number(c.value));
       closeFilterDrawer();
-      let filteredPins;
       if (activeFilters.length === 0) {
         filteredPins = pins;
       } else {

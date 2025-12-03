@@ -5,7 +5,6 @@ const backToLoginBtn = document.getElementById("back-to-login-btn");
 const mapToBtn = document.getElementById("map");
 const backToLogin = document.getElementById("back-to-login");
 const btns = document.querySelectorAll("button");
-let activeFilters = [];
 
 showSignupBtn.addEventListener("click", () => {
   loginForm.style.display = "none";
