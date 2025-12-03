@@ -1,13 +1,12 @@
 @charset "UTF-8";
-
-/*全体*/
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   font-family: "Noto Sans JP", "Helvetica Neue", Arial, sans-serif;
   background: #f5f7fa;
@@ -23,7 +22,7 @@ html, body {
   font-size: 22px;
   letter-spacing: 2px;
   font-weight: 700;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -51,8 +50,8 @@ html, body {
   border-radius: 20px;
   display: flex;
   justify-content: space-around;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .bottom-nav button {
@@ -85,7 +84,7 @@ html, body {
   position: fixed;
   z-index: 1000;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
 }
 
@@ -100,14 +99,22 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   animation: popIn 0.3s ease;
 }
 
 @keyframes popIn {
-  from { transform: translate(-50%, -40%) scale(0.95); opacity: 0; }
-  to   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  from {
+    transform: translate(-50%, -40%) scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
 }
+
 /* モーダルの中身デザイン */
 .modal-content {
   background-color: white;
@@ -130,11 +137,13 @@ html, body {
   width: 300px;
   height: 100%;
   background: white;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
   z-index: 2500;
   transition: right 0.3s ease;
   overflow-y: auto;
-}/* ドロワーが開いた状態 */
+}
+
+/* ドロワーが開いた状態 */
 .filter-drawer.open {
   right: 0;
 }
@@ -175,6 +184,7 @@ html, body {
     padding: 10px 0;
   }
 }
+
 /*フィルタードロワー全体*/
 .filter-drawer {
   position: fixed;
@@ -183,11 +193,11 @@ html, body {
   width: 300px;
   height: 100%;
   background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
-  box-shadow: -4px 0 15px rgba(0,0,0,0.15);
+  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15);
   z-index: 2500;
   transition: right 0.3s ease;
   overflow-y: auto;
-  border-left: 1px solid rgba(0,0,0,0.05);
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 8px 0 0 8px;
   color: #2f3e46;
   font-family: "Noto Sans JP", "Segoe UI", sans-serif;
@@ -204,7 +214,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   padding: 12px 10px;
-  border-bottom: 1.5px solid rgba(0,0,0,0.1);
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.1);
   font-weight: 600;
   font-size: 18px;
   color: #1565c0;
@@ -262,13 +272,13 @@ html, body {
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  background: linear-gradient(135deg, #1e88e5, #43a047); 
+  background: linear-gradient(135deg, #1e88e5, #43a047);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #applyFilterBtn:hover {
   transform: scale(1.02);
-  box-shadow: 0 3px 10px rgba(30,136,229,0.25);
+  box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
 }
 
 /*スクロールバー*/
@@ -277,36 +287,20 @@ html, body {
 }
 
 .filter-drawer::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0,0.15);
+  background-color: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }
-
-/*スマホ対応*/
-@media (max-width: 480px) {
-  .filter-drawer {
-    width: 240px;
-  }
-
-  .filter-header {
-    font-size: 16px;
-  }
-
-  #applyFilterBtn {
-    font-size: 15px;
-    padding: 10px 0;
-  }
-}
-
 #filterOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0);
+  background: rgba(0, 0, 0, 0);
   display: none;
   z-index: 900;
 }
+
 .post-modal {
   width: 520px;
   max-width: 92%;
@@ -314,9 +308,10 @@ html, body {
   border-radius: 12px;
   padding: 25px 25px 30px;
   animation: fadeIn 0.25s ease;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   border-top: 6px solid #1e88e5;
 }
+
 .modal-title {
   font-size: 22px;
   font-weight: 600;
@@ -325,10 +320,12 @@ html, body {
   margin-bottom: 18px;
   font-family: "Noto Sans JP", sans-serif;
 }
+
 .required {
   color: red;
   font-size: 14px;
 }
+
 .input-field,
 .textarea-field,
 #image {
@@ -341,21 +338,25 @@ html, body {
   background: #f9f9f9;
   transition: 0.2s;
 }
+
 .input-field:focus,
 .textarea-field:focus {
   border-color: #43a047;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(67,160,71,0.2);
+  box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.2);
 }
+
 .textarea-field {
   height: 90px;
   resize: vertical;
 }
+
 .modal-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
 }
+
 .submit-btn {
   flex: 1;
   margin-right: 6px;
@@ -369,10 +370,12 @@ html, body {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 .submit-btn:hover {
   transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(30,136,229,0.3);
+  box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
 }
+
 .cancel-btn {
   flex: 1;
   margin-left: 6px;
@@ -390,13 +393,21 @@ html, body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translate(-50%, -48%); }
-  to { opacity: 1; transform: translate(-50%, -50%); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
+
 @media (max-width: 480px) {
   .post-modal {
     width: 95%;
-    padding: 18px 15px 22px; 
+    padding: 18px 15px 22px;
   }
   .modal-title {
     font-size: 18px;
@@ -407,6 +418,16 @@ html, body {
   }
   .submit-btn,
   .cancel-btn {
+    font-size: 15px;
+    padding: 10px 0;
+  }
+  .filter-drawer {
+    width: 240px;
+  }
+  .filter-header {
+    font-size: 16px;
+  }
+  #applyFilterBtn {
     font-size: 15px;
     padding: 10px 0;
   }

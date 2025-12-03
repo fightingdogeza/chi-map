@@ -122,30 +122,23 @@
     #back-to-login:hover {
         background: #c8e6c9;
     }
-
-    /*非表示フォーム*/
     #signup-form,
     #forgot-form {
         display: none;
     }
-
-    /*メッセージ*/
     #signup-message {
         margin-top: 1em;
         color: #2e7d32;
         font-weight: bold;
     }
-
     /*スマホ対応*/
     @media (max-width: 480px) {
         h1 {
             font-size: 1.7em;
         }
-
         form {
             padding: 1.8em;
         }
-
         button {
             font-size: 0.95em;
         }
