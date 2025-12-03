@@ -1,28 +1,33 @@
 <div id="pinModal" class="modal" style="display:none;">
-    <div class="modal-content">
-        <h2>危険情報を投稿</h2>
+    <div class="modal-content post-modal">
+        <h2 class="modal-title">危険情報を投稿</h2>
+
         <form id="pinForm">
             <input type="hidden" id="latitude" name="latitude">
             <input type="hidden" id="longitude" name="longitude">
-            <label>タイトル<label style="color: red;">（必須*）</label></label>
-            <input type="text" id="title" name="title" required>
-            <br>
+
+            <label>タイトル <span class="required">(必須)</span></label>
+            <input type="text" id="title" name="title" required class="input-field">
+
             <label>説明（任意）</label>
-            <textarea id="description" name="description"></textarea>
-            <br>
-            <label>カテゴリ<label style="color: red;">（必須*）</label></label>
-            <select id="category" name="category">
-                <option value="none" no-require></option>
+            <textarea id="description" name="description" class="textarea-field"></textarea>
+
+            <label>カテゴリ <span class="required">(必須)</span></label>
+            <select id="category" name="category" class="input-field" required>
+                <option value="">選択してください</option>
                 <option value="1">交通・道路</option>
                 <option value="2">不審者</option>
                 <option value="3">洪水</option>
                 <option value="4">危険物・障害物</option>
                 <option value="5">その他</option>
             </select>
-             <input type="file" id="image" accept="image/*">
-            <div class="buttons">
-                <button type="submit" id="submitBtn">送信</button>
-                <button type="button" id="cancelBtn">キャンセル</button>
+
+            <label>画像（任意）</label>
+            <input type="file" id="image" accept="image/*" class="input-field">
+
+            <div class="modal-buttons">
+                <button type="submit" id="submitBtn" class="submit-btn">送信</button>
+                <button type="button" id="cancelBtn" class="cancel-btn">キャンセル</button>
             </div>
         </form>
     </div>
