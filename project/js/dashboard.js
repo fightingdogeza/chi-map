@@ -192,13 +192,31 @@ window.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", () => {
       const checks = document.querySelectorAll(".filter-checkbox:checked");
       activeFilters = Array.from(checks).map(c => Number(c.value));
+      const timeFilter = document.querySelector('input[name="time-filter"]:checked')?.value;
+      filteredPins = pins;
       closeFilterDrawer();
-      if (activeFilters.length === 0) {
-        filteredPins = pins;
-      } else {
-        filteredPins = pins.filter(pin =>
+      // ---- カテゴリで絞る ----
+      if (activeFilters.length > 0) {
+        filteredPins = filteredPins.filter(pin =>
           activeFilters.includes(pin.category_id)
         );
+      }
+      // ---- 時間で絞る ----
+      if (timeFilter && timeFilter !== "none") {
+        const now = new Date();
+        filteredPins = filteredPins.filter(pin => {
+          const created = new Date(pin.created_at);
+          if (timeFilter === "24h") {
+            return now - created <= 24 * 60 * 60 * 1000;
+          }
+          if (timeFilter === "7d") {
+            return now - created <= 7 * 24 * 60 * 60 * 1000;
+          }
+          if (timeFilter === "30d") {
+            return now - created <= 30 * 24 * 60 * 60 * 1000;
+          }
+          return true;
+        });
       }
       renderPins(filteredPins);
     });

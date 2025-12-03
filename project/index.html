@@ -24,25 +24,25 @@
     <button id="nav-login"> 一覧</button>
     <button id="nav-list"> フィルタ</button>
   </nav>
-    <div id="filterDrawer" class="filter-drawer">
-      <div class="filter-header">
-        <h3>フィルター</h3>
-        <button id="closeFilterDrawer">✕</button>
-      </div>
-      <div class="filter-body">
-        <label><input type="checkbox" class="filter-checkbox" value="1"> 交通</label><br>
-        <label><input type="checkbox" class="filter-checkbox" value="2"> 不審者情報</label><br>
-        <label><input type="checkbox" class="filter-checkbox" value="3"> 洪水</label><br>
-        <label><input type="checkbox" class="filter-checkbox" value="4"> 危険物</label><br>
-        <label><input type="checkbox" class="filter-checkbox" value="5"> その他</label><br>
-      </div>
-      <div class="filter-footer">
-        <button id="applyFilterBtn">適用</button>
-      </div>
+  <div id="filterDrawer" class="filter-drawer">
+    <div class="filter-header">
+      <h3>フィルター</h3>
+      <button id="closeFilterDrawer">✕</button>
     </div>
+    <div class="filter-body">
+      <label><input type="checkbox" class="filter-checkbox" value="1"> 交通</label><br>
+      <label><input type="checkbox" class="filter-checkbox" value="2"> 不審者情報</label><br>
+      <label><input type="checkbox" class="filter-checkbox" value="3"> 洪水</label><br>
+      <label><input type="checkbox" class="filter-checkbox" value="4"> 危険物</label><br>
+      <label><input type="checkbox" class="filter-checkbox" value="5"> その他</label><br>
+    </div>
+    <div class="filter-footer">
+      <button id="applyFilterBtn">適用</button>
+    </div>
+  </div>
 
   <div id="modal-container"></div>
-<div id="filterOverlay"></div>
+  <div id="filterOverlay"></div>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
   <script type="module" defer src="js/1106demo.js"></script>
