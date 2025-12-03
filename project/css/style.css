@@ -307,3 +307,107 @@ html, body {
   display: none;
   z-index: 900;
 }
+.post-modal {
+  width: 520px;
+  max-width: 92%;
+  background: white;
+  border-radius: 12px;
+  padding: 25px 25px 30px;
+  animation: fadeIn 0.25s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  border-top: 6px solid #1e88e5;
+}
+.modal-title {
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  color: #1565c0;
+  margin-bottom: 18px;
+  font-family: "Noto Sans JP", sans-serif;
+}
+.required {
+  color: red;
+  font-size: 14px;
+}
+.input-field,
+.textarea-field,
+#image {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 6px 0 16px;
+  font-size: 16px;
+  border: 1.5px solid #cfd8dc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  transition: 0.2s;
+}
+.input-field:focus,
+.textarea-field:focus {
+  border-color: #43a047;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(67,160,71,0.2);
+}
+.textarea-field {
+  height: 90px;
+  resize: vertical;
+}
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+.submit-btn {
+  flex: 1;
+  margin-right: 6px;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1e88e5, #43a047);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.submit-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(30,136,229,0.3);
+}
+.cancel-btn {
+  flex: 1;
+  margin-left: 6px;
+  padding: 12px 0;
+  font-size: 16px;
+  background: #ccc;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: #b0b0b0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -48%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+@media (max-width: 480px) {
+  .post-modal {
+    width: 95%;
+    padding: 18px 15px 22px; 
+  }
+  .modal-title {
+    font-size: 18px;
+  }
+  .input-field,
+  .textarea-field {
+    font-size: 15px;
+  }
+  .submit-btn,
+  .cancel-btn {
+    font-size: 15px;
+    padding: 10px 0;
+  }
+}

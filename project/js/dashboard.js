@@ -5,7 +5,6 @@ let user;
 let access_token;
 let filteredPins;
 let activeFilters = [];
-
 async function initSupabase() {
   if (typeof window.supabase === "undefined") {
     console.error("Supabaseライブラリが読み込まれていません。");
