@@ -348,6 +348,18 @@ async function loadPins() {
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
   }
+  // 今日
+  const now = new Date();
+  // 30日前
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(now.getDate() - 30);
+
+  // created_at が30日以内のものだけ
+  pins = pins.filter(pin => {
+    const createdAt = new Date(pin.created_at);
+    return createdAt >= thirtyDaysAgo;
+  });
+
   renderPins(pins);
 }
 function applyFilters(timeFilter) {

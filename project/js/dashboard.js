@@ -104,6 +104,14 @@ async function loadAllPinsForAdmin() {
     console.error("全投稿取得エラー:", err);
   }
   pins = Array.isArray(res.data) ? res.data : [];
+  const now = new Date();
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(now.getDate() - 30);
+  pins = pins.filter(pin => {
+    const createdAt = new Date(pin.created_at);
+    return createdAt >= thirtyDaysAgo;
+  });
+
   renderPins(pins);
 }
 
@@ -122,6 +130,14 @@ async function loadDashboardPins(userId) {
     console.error("自分の投稿取得エラー:", err);
   }
   pins = Array.isArray(res.data) ? res.data : [];
+  const now = new Date();
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(now.getDate() - 30);
+  pins = pins.filter(pin => {
+    const createdAt = new Date(pin.created_at);
+    return createdAt >= thirtyDaysAgo;
+  });
+
   renderPins(pins);
 }
 
