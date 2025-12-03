@@ -203,17 +203,20 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       // ---- 時間で絞る ----
       if (timeFilter && timeFilter !== "none") {
-        const now = new Date();
         filteredPins = filteredPins.filter(pin => {
           const created = new Date(pin.created_at);
-          if (timeFilter === "24h") {
-            return now - created <= 24 * 60 * 60 * 1000;
+          const hour = created.getHours();
+          if (timeFilter === "midnight") {
+            return hour >= 0 && hour < 6;
           }
-          if (timeFilter === "7d") {
-            return now - created <= 7 * 24 * 60 * 60 * 1000;
+          if (timeFilter === "morning") {
+            return hour >= 5 && hour < 12;
           }
-          if (timeFilter === "30d") {
-            return now - created <= 30 * 24 * 60 * 60 * 1000;
+          if (timeFilter === "noon") {
+            return hour >= 12 && hour < 18;
+          }
+          if (timeFilter === "night") {
+            return hour >= 18 && hour < 24;
           }
           return true;
         });

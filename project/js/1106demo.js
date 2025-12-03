@@ -350,6 +350,43 @@ async function loadPins() {
   }
   renderPins(pins);
 }
+function applyFilters(timeFilter) {
+  let filtered = pins;
+
+  // ---- カテゴリ ----
+  if (activeFilters.length > 0) {
+    filtered = filtered.filter(pin =>
+      activeFilters.includes(Number(pin.category_id))
+    );
+  }
+
+  // ---- 時間帯 ----
+  if (timeFilter && timeFilter !== "none") {
+
+    filtered = filtered.filter(pin => {
+      const created = new Date(pin.created_at);
+      const hour = created.getHours(); // 0〜23
+
+      if (timeFilter === "midnight") {
+        return hour >= 0 && hour < 6;      // 深夜
+      }
+      if (timeFilter === "morning") {
+        return hour >= 6 && hour < 12;     // 朝
+      }
+      if (timeFilter === "noon") {
+        return hour >= 12 && hour < 18;    // 昼
+      }
+      if (timeFilter === "night") {
+        return hour >= 18 && hour < 24;    // 夜
+      }
+
+      return true;
+    });
+  }
+
+  renderPins(filtered);
+}
+
 function renderPins(pins) {
   markers.forEach(m => m.setMap(null));
   markers = [];
@@ -365,7 +402,6 @@ function renderPins(pins) {
     map,
     markers,
     algorithm: new markerClusterer.SuperClusterAlgorithm({ radius: 80 }),
-
     renderer: {
       render: ({ count, position, markers }) => {
         const categoryCount = {};
@@ -400,7 +436,8 @@ function renderPins(pins) {
     if (infoWindow) {
       infoWindow.close();
       infoWindow.setMap(null);
-    } const markersInCluster = event.markers;
+    }
+    const markersInCluster = event.markers;
     if (!markersInCluster || markersInCluster.length === 0) return;
     // 現在のマップ範囲を取得
     const bounds = new google.maps.LatLngBounds();
@@ -456,7 +493,6 @@ window.addEventListener("DOMContentLoaded", () => {
     drawer.style.right = "0";
     overlay.style.display = "block";
   });
-
   function closeFilterDrawer() {
     drawer.style.right = "-300px";
     overlay.style.display = "none";
@@ -465,10 +501,14 @@ window.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", closeFilterDrawer);
   document.getElementById("applyFilterBtn")
     .addEventListener("click", () => {
+      // ---- カテゴリフィルタ ----
       const checks = document.querySelectorAll(".filter-checkbox:checked");
       activeFilters = Array.from(checks).map(c => Number(c.value));
+      // ---- 時間帯フィルタ ----
+      const timeFilter = document.querySelector('input[name="time-filter"]:checked')?.value;
       closeFilterDrawer();
-      loadPins();
+      // フィルタ適用して再描画
+      applyFilters(timeFilter);
     });
   overlay.addEventListener("click", () => {
     closeFilterDrawer();
