@@ -86,8 +86,15 @@ body {
 .map-btn {
   background: linear-gradient(135deg, #43a047, #1e88e5);
 }
-
 .map-btn:hover {
+  background: linear-gradient(135deg, #388e3c, #1976d2);
+  box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
+}
+
+.filter-btn {
+  background: linear-gradient(135deg, #43a047, #1e88e5);
+}
+.filter-btn:hover {
   background: linear-gradient(135deg, #388e3c, #1976d2);
   box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
 }
