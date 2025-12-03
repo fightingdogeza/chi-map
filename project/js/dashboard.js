@@ -58,7 +58,6 @@ async function init() {
     await loadDashboardPins(user.id);
   }
 }
-
 async function deletePin(pin) {
   if (!user) {
     alert("ログインしてください");
@@ -78,7 +77,6 @@ async function deletePin(pin) {
         imagePath: pin.image_path,
       }),
     });
-
     const result = await response.json();
     if (result.success) {
       alert("削除しました");
@@ -127,12 +125,10 @@ async function loadDashboardPins(userId) {
 function renderPins(pins) {
   const container = document.getElementById("content");
   container.innerHTML = "";
-
   if (!pins || pins.length === 0) {
     container.innerHTML = "<p>投稿がありません。</p>";
     return;
   }
-
   pins.forEach((pin) => {
     const card = document.createElement("div");
     card.id = `pin-${pin.id}`;
@@ -153,7 +149,6 @@ function renderPins(pins) {
       card.querySelector(".delete-btn").disabled = "false";
       deletePin(pin);
       card.querySelector(".delete-btn").disabled = "true";
-
     });
     card.querySelector(".goto-map-btn")
       .addEventListener("click", () => {
@@ -168,12 +163,10 @@ function renderPins(pins) {
 document.getElementById("map").addEventListener("click", () => {
   window.location.href = "https://chi-map.pages.dev";
 });
-
 document.getElementById("logout").addEventListener("click", async () => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
   localStorage.removeItem("supabase_session");
-
   alert("ログアウトしました。");
   window.location.href = "https://chi-map.pages.dev/auth";
 });
@@ -186,7 +179,6 @@ window.addEventListener("DOMContentLoaded", () => {
     drawer.style.right = "0";
     overlay.style.display = "block";
   });
-
   function closeFilterDrawer() {
     drawer.style.right = "-300px";
     overlay.style.display = "none";
@@ -198,8 +190,15 @@ window.addEventListener("DOMContentLoaded", () => {
       const checks = document.querySelectorAll(".filter-checkbox:checked");
       activeFilters = Array.from(checks).map(c => Number(c.value));
       closeFilterDrawer();
-      console.log(activeFilters);
-      renderPins(activeFilters);
+      let filteredPins;
+      if (activeFilters.length === 0) {
+        filteredPins = pins;
+      } else {
+        filteredPins = pins.filter(pin =>
+          activeFilters.includes(pin.category_id)
+        );
+      }
+      renderPins(filteredPins);
     });
   overlay.addEventListener("click", () => {
     closeFilterDrawer();
