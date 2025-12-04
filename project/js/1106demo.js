@@ -185,33 +185,6 @@ function setupPost() {
     if (fileInput.files.length > 0) {
       formData.append("image", fileInput.files[0]);
     }
-    // --- Nominatim で住所取得 ---
-    //async function getAddressFromLatLng(lat, lng) {
-    //try {
-    //const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=ja`, {
-    //headers: { "User-Agent": "ChiMapApp/1.0 (waruka698@gmail.com)" }
-    // });
-    //const data = await res.json();
-    //const addr = data.address || {};
-    //const prefecture = addr.state || ""; // 都道府県
-    //const city = addr.city || addr.town || addr.village || addr.county || ""; // 市区町村
-    //const district = addr.suburb || addr.neighbourhood || ""; // 町域
-    //return { prefecture, city, district };
-    //} catch (err) {
-    //console.error("住所取得エラー:", err);
-    //return "";
-    //   }
-    // }
-
-    //const { prefecture, city, district } = await getAddressFromLatLng(lat, lng);
-    //console.log(prefecture);
-    //console.log(data.state);
-    //if(prefecture || city || district){
-    //formData.append("prefecture",prefecture);
-    //formData.append("city",city);
-    //formData.append("district",district);
-    //   }
-
     try {
       const response = await fetch("https://environment.chi-map.workers.dev/post-pin", {
         method: "POST",
@@ -348,13 +321,10 @@ async function loadPins() {
   if (activeFilters.length > 0) {
     pins = pins.filter(pin => activeFilters.includes(Number(pin.category_id)));
   }
-  // 今日
   const now = new Date();
-  // 30日前
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(now.getDate() - 30);
 
-  // created_at が30日以内のものだけ
   pins = pins.filter(pin => {
     const createdAt = new Date(pin.created_at);
     return createdAt >= thirtyDaysAgo;
@@ -365,31 +335,29 @@ async function loadPins() {
 function applyFilters(timeFilter) {
   let filtered = pins;
 
-  // ---- カテゴリ ----
   if (activeFilters.length > 0) {
     filtered = filtered.filter(pin =>
       activeFilters.includes(Number(pin.category_id))
     );
   }
 
-  // ---- 時間帯 ----
   if (timeFilter && timeFilter !== "none") {
 
     filtered = filtered.filter(pin => {
       const created = new Date(pin.created_at);
-      const hour = created.getHours(); // 0〜23
+      const hour = created.getHours();
 
       if (timeFilter === "midnight") {
-        return hour >= 0 && hour < 6;      // 深夜
+        return hour >= 0 && hour < 6;
       }
       if (timeFilter === "morning") {
-        return hour >= 6 && hour < 12;     // 朝
+        return hour >= 6 && hour < 12;
       }
       if (timeFilter === "noon") {
-        return hour >= 12 && hour < 18;    // 昼
+        return hour >= 12 && hour < 18;
       }
       if (timeFilter === "night") {
-        return hour >= 18 && hour < 24;    // 夜
+        return hour >= 18 && hour < 24;
       }
 
       return true;
@@ -513,13 +481,10 @@ window.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", closeFilterDrawer);
   document.getElementById("applyFilterBtn")
     .addEventListener("click", () => {
-      // ---- カテゴリフィルタ ----
       const checks = document.querySelectorAll(".filter-checkbox:checked");
       activeFilters = Array.from(checks).map(c => Number(c.value));
-      // ---- 時間帯フィルタ ----
       const timeFilter = document.querySelector('input[name="time-filter"]:checked')?.value;
       closeFilterDrawer();
-      // フィルタ適用して再描画
       applyFilters(timeFilter);
     });
   overlay.addEventListener("click", () => {
