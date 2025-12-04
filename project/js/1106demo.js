@@ -353,10 +353,10 @@ function applyFilters(timeFilter) {
         return hour >= 0 && hour < 6;
       }
       if (timeFilter === "morning") {
-        return hour >= 6 && hour < 12;
+        return hour >= 6 && hour < 10;
       }
       if (timeFilter === "noon") {
-        return hour >= 12 && hour < 18;
+        return hour >= 10 && hour < 18;
       }
       if (timeFilter === "night") {
         return hour >= 18 && hour < 24;
