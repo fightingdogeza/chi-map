@@ -432,7 +432,7 @@ function renderPins(pins) {
 
     google.maps.event.addListenerOnce(map, "idle", () => {
       if (map.getZoom() < 19) {
-        map.setZoom(map.getZoom() -3);
+        map.setZoom(map.getZoom() +2);
       }
       shouldUpdateCluster = true;
     });
