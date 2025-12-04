@@ -368,16 +368,26 @@ function applyFilters(timeFilter) {
 }
 
 function renderPins(pins) {
+  // ----- 初期化 -----
+  // 旧マーカー消去
   markers.forEach(m => m.setMap(null));
   markers = [];
-  pins.forEach(pin => {
-    createMarker(pin)
-  });
+
+  // 新規マーカー生成
+  pins.forEach(pin => createMarker(pin));
+
+  // 既存cluster消去
   if (markerCluster) {
     markerCluster.clearMarkers();
   }
-  if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
 
+  if (!infoWindow) {
+    infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
+  }
+
+  let isClusterClick = false; // ← クラスタクリック中判定フラグ
+
+  // ----- クラスタ生成 -----
   markerCluster = new markerClusterer.MarkerClusterer({
     map,
     markers,
@@ -389,6 +399,7 @@ function renderPins(pins) {
           const cat = m.pinData?.categories?.name || "不明";
           categoryCount[cat] = (categoryCount[cat] || 0) + 1;
         });
+
         const categorySummary = Object.entries(categoryCount)
           .map(([cat, num]) => `${cat}: ${num}`)
           .join(", ");
@@ -412,40 +423,65 @@ function renderPins(pins) {
       },
     },
   });
+
+  // ----- クラスタクリック処理 -----
   markerCluster.addListener("click", (event) => {
+    isClusterClick = true; // ← updateCluster を無効化
+
     if (infoWindow) {
       infoWindow.close();
       infoWindow.setMap(null);
     }
+
     const markersInCluster = event.markers;
-    if (!markersInCluster || markersInCluster.length === 0) return;
-    // 現在のマップ範囲を取得
+    if (!markersInCluster || markersInCluster.length === 0) {
+      isClusterClick = false;
+      return;
+    }
+
+    // クリックしたクラスタ内の範囲へズーム
     const bounds = new google.maps.LatLngBounds();
     markersInCluster.forEach(m => bounds.extend(m.getPosition()));
     map.fitBounds(bounds);
+
     google.maps.event.addListenerOnce(map, "idle", () => {
       if (map.getZoom() < 19) {
         map.setZoom(map.getZoom() + 1);
       }
+
+      // ズーム完了後に updateCluster 再開
+      setTimeout(() => {
+        isClusterClick = false;
+        updateCluster(); // ← クリック時のピン表示を確実に行う
+      }, 120);
     });
   });
-  const updateCluster = _.debounce(() => {
-    if (!map || !map.getBounds()) return;
-    if (infoWindow.getMap()) return;
-    const bounds = map.getBounds();
-    if (!bounds) return;
 
-    // 画面内にいるマーカーだけ抽出
-    const visibleMarkers = markers.filter(marker => bounds.contains(marker.getPosition()));
+  // ----- updateCluster（可視領域だけ再クラスタリング） -----
+  const updateCluster = _.debounce(() => {
+    if (isClusterClick) return; // ← クリック中は絶対再計算しない
+
+    if (!map || !map.getBounds()) return;
+
+    const bounds = map.getBounds();
+
+    // 範囲内のマーカーのみ追加
+    const visibleMarkers = markers.filter(marker =>
+      bounds.contains(marker.getPosition())
+    );
 
     markerCluster.clearMarkers();
     markerCluster.addMarkers(visibleMarkers);
-  }, 100);
+  }, 120);
 
+  // ----- マップイベント（ドラッグ & ズーム） -----
   google.maps.event.clearListeners(map, "dragend");
   google.maps.event.clearListeners(map, "zoom_changed");
+
   map.addListener("dragend", updateCluster);
   map.addListener("zoom_changed", updateCluster);
+
+  // 初回実行
   updateCluster();
 }
 async function updateNavMenu() {
