@@ -176,6 +176,20 @@ body {
   background: linear-gradient(135deg, #1565c0, #388e3c);
   box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
 }
+.pin-card {
+  max-width: 250px;          /* カードの最大横幅を制限（必要に応じて変更） */
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+
+  overflow-x: hidden;        /* 横スクロールを防止 */
+  overflow-y: auto;          /* 縦スクロールだけ許可（必要なら） */
+
+  word-break: break-word;    /* 長い単語でも強制折返し */
+  overflow-wrap: break-word; /* こちらでも折り返しを補強 */
+}
 
 /*フィルタードロワー全体*/
 .filter-drawer {
