@@ -312,17 +312,31 @@ body {
   z-index: 900;
 }
 
-/*スマホ対応*/
 @media (max-width: 480px) {
-  .dashboard-container {
-    padding: 1.6em;
+  .post-modal {
+    width: 95%;
+    padding: 18px 15px 22px;
   }
-
-  .dashboard-header h1 {
-    font-size: 1.5em;
+  .modal-title {
+    font-size: 18px;
   }
-
-  .btn {
-    font-size: 0.95em;
+  .input-field,
+  .textarea-field {
+    font-size: 15px;
+  }
+  .submit-btn,
+  .cancel-btn {
+    font-size: 15px;
+    padding: 10px 0;
+  }
+  .filter-drawer {
+    width: 240px;
+  }
+  .filter-header {
+    font-size: 16px;
+  }
+  #applyFilterBtn {
+    font-size: 15px;
+    padding: 10px 0;
   }
 }
