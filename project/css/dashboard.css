@@ -177,25 +177,25 @@ body {
   box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
 }
 .pin-card {
-  text-align: center;        /* ← 全て中央寄せ */
-  max-width: 280px;
-  padding: 12px;
-  margin: 10px auto;         /* 中央配置（必要なら） */
-  border-radius: 8px;
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 
-  overflow-x: hidden;
-  overflow-y: auto;
+  text-align: center;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 
+  overflow-x: hidden;
   word-break: break-word;
-  overflow-wrap: break-word;
 }
 
 .pin-card img {
   max-width: 100%;
-  height: auto;
   display: block;
-  margin: 0 auto;            /* ← 画像も中央寄せ */
+  margin: 0 auto;
+  height: auto;
 }
 
 /*フィルタードロワー全体*/
