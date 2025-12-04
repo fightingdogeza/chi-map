@@ -11,6 +11,8 @@ let user = null;
 let activeFilters = [];
 let markerCluster = null;
 let pins = [];
+let shouldUpdateCluster = true;
+
 const categoryColors = {
   1: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
   2: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
@@ -368,24 +370,16 @@ function applyFilters(timeFilter) {
 }
 
 function renderPins(pins) {
-  // ----- 初期化 -----
   markers.forEach(m => m.setMap(null));
   markers = [];
-
-  pins.forEach(pin => createMarker(pin));
-
+  pins.forEach(pin => {
+    createMarker(pin)
+  });
   if (markerCluster) {
     markerCluster.clearMarkers();
   }
+  if (!infoWindow) infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
 
-  if (!infoWindow) {
-    infoWindow = new google.maps.InfoWindow({ disableAutoPan: true });
-  }
-
-  let isClusterClick = false;
-  let zoomIdleHandler = null;
-
-  // ----- クラスタ生成 -----
   markerCluster = new markerClusterer.MarkerClusterer({
     map,
     markers,
@@ -397,7 +391,6 @@ function renderPins(pins) {
           const cat = m.pinData?.categories?.name || "不明";
           categoryCount[cat] = (categoryCount[cat] || 0) + 1;
         });
-
         const categorySummary = Object.entries(categoryCount)
           .map(([cat, num]) => `${cat}: ${num}`)
           .join(", ");
@@ -421,10 +414,8 @@ function renderPins(pins) {
       },
     },
   });
-
-  // ----- クラスタクリック処理 -----
   markerCluster.addListener("click", (event) => {
-    isClusterClick = true;
+    shouldUpdateCluster = false;
 
     if (infoWindow) {
       infoWindow.close();
@@ -432,58 +423,41 @@ function renderPins(pins) {
     }
 
     const markersInCluster = event.markers;
-    if (!markersInCluster || markersInCluster.length === 0) {
-      isClusterClick = false;
-      return;
-    }
+    if (!markersInCluster || markersInCluster.length === 0) return;
 
     const bounds = new google.maps.LatLngBounds();
     markersInCluster.forEach(m => bounds.extend(m.getPosition()));
+
     map.fitBounds(bounds);
 
-    // ズームが完了するまで updateCluster を一切発動させない
-    if (zoomIdleHandler) {
-      google.maps.event.removeListener(zoomIdleHandler);
-    }
-
-    zoomIdleHandler = google.maps.event.addListenerOnce(map, "idle", () => {
-      // 最終調整ズーム
+    google.maps.event.addListenerOnce(map, "idle", () => {
       if (map.getZoom() < 19) {
         map.setZoom(map.getZoom() + 1);
       }
-
-      // 本当にズーム完了後にクラスタを丸ごと再構築
-      setTimeout(() => {
-        markerCluster.clearMarkers();     // ← 全削除
-        markerCluster.addMarkers(markers); // ← 全追加（範囲判定しない）
-        isClusterClick = false;           // updateCluster の再開
-        updateCluster();                  // 最終反映
-      }, 150);
+      shouldUpdateCluster = true;
     });
   });
-
-  // ----- 通常の updateCluster -----
   const updateCluster = _.debounce(() => {
-    if (isClusterClick) return;
-
+    if (!shouldUpdateCluster) return;
     if (!map || !map.getBounds()) return;
+    if (infoWindow.getMap()) return;
 
     const bounds = map.getBounds();
+    if (!bounds) return;
+
     const visibleMarkers = markers.filter(marker =>
       bounds.contains(marker.getPosition())
     );
 
     markerCluster.clearMarkers();
     markerCluster.addMarkers(visibleMarkers);
-  }, 120);
+  }, 100);
 
-  // ----- マップイベント -----
+
   google.maps.event.clearListeners(map, "dragend");
   google.maps.event.clearListeners(map, "zoom_changed");
-
   map.addListener("dragend", updateCluster);
   map.addListener("zoom_changed", updateCluster);
-
   updateCluster();
 }
 async function updateNavMenu() {
