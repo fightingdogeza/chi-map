@@ -177,18 +177,25 @@ body {
   box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
 }
 .pin-card {
-  max-width: 250px;          /* カードの最大横幅を制限（必要に応じて変更） */
-  padding: 10px;
-  margin: 10px;
-  border: 1px solid #ccc;
+  text-align: center;        /* ← 全て中央寄せ */
+  max-width: 280px;
+  padding: 12px;
+  margin: 10px auto;         /* 中央配置（必要なら） */
   border-radius: 8px;
   box-sizing: border-box;
 
-  overflow-x: hidden;        /* 横スクロールを防止 */
-  overflow-y: auto;          /* 縦スクロールだけ許可（必要なら） */
+  overflow-x: hidden;
+  overflow-y: auto;
 
-  word-break: break-word;    /* 長い単語でも強制折返し */
-  overflow-wrap: break-word; /* こちらでも折り返しを補強 */
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.pin-card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;            /* ← 画像も中央寄せ */
 }
 
 /*フィルタードロワー全体*/
