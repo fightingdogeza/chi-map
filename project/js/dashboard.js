@@ -161,7 +161,8 @@ function renderPins(pins) {
       <p><strong>投稿日時:</strong> ${new Date(pin.created_at).toLocaleString()}</p>
       ${pin.image_path ? `<img src="${pin.image_path}" style="max-width:200px;" />` : ""}<br>
       <button class="goto-map-btn">地図で見る</button>
-      <button class="delete-btn">削除</button>
+      <button class="delete-btn">削除</button><br>
+      <p>ーーーーーーーーーーーーーーーーーーーーーーーー</p>
     `;
     card.querySelector(".delete-btn").addEventListener("click", () => {
       card.querySelector(".delete-btn").disabled = "false";
