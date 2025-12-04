@@ -187,6 +187,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 8px;
 
+  bottom: 1px solid black;
   overflow-x: hidden;
   word-break: break-word;
 }
