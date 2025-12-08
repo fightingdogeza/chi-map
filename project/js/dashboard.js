@@ -147,6 +147,8 @@ function renderPins(pins) {
     container.innerHTML = "<p>投稿がありません。</p>";
     return;
   }
+
+  pins.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   pins.forEach((pin) => {
     const card = document.createElement("div");
     card.id = `pin-${pin.id}`;
