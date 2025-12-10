@@ -67,7 +67,7 @@ body {
   border-radius: 20px;
 }
 
-.infoWindow delete-btn {
+#delete-btn {
   background: linear-gradient(135deg, #e53935, #ef5350); /* 赤系グラデーション */
   color: #fff;
   border: none;
@@ -78,7 +78,7 @@ body {
   transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 
-.infoWindow delete-btn:hover {
+#delete-btn:hover {
   background: linear-gradient(135deg, #d32f2f, #e57373);
   box-shadow: 0 3px 10px rgba(229, 57, 53, 0.25);
 }
