@@ -244,7 +244,7 @@ function createMarker(pin) {
     let categoryName = pin.categories?.name ?? "未分類";
     const showDelete = user && user.id === pin.uid;
     const content = `
-    <div>
+    <div id="infoWindow">
       <h3>${pin.title}</h3>
       <p>${pin.description}</p>
       <p><strong>カテゴリー:</strong> ${categoryName}</p>
