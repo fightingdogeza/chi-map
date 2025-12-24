@@ -166,6 +166,7 @@ function renderPins(pins) {
       <button class="delete-btn">削除</button><br>
       <p><strong>ーーーーーーーーーーーーーー</strong></p>
     `;
+
     card.querySelector(".delete-btn").addEventListener("click", () => {
       card.querySelector(".delete-btn").disabled = "false";
       deletePin(pin);
