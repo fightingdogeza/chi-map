@@ -229,7 +229,7 @@ window.addEventListener("DOMContentLoaded", () => {
             return hour >= 0 && hour < 6;
           }
           if (timeFilter === "morning") {
-            return hour >= 5 && hour < 10;
+            return hour >= 6 && hour < 10;
           }
           if (timeFilter === "noon") {
             return hour >= 10 && hour < 18;
